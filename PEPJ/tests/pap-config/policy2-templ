@@ -1,0 +1,8 @@
+resource "test2" {
+    obligation "http://glite.org/xacml/obligation/local-environment-map" {
+    }
+    action "test2" {
+        rule permit { subject="__SUBJECT__" }
+    }
+} 
+

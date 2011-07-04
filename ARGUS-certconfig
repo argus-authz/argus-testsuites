@@ -1,0 +1,10 @@
+
+export PAP_HOME=/opt/argus/pap
+export LOGSLOCATION=/tmp
+
+#TEST TO RUN (yes/no)
+export PAP_CLI="yes"
+export PAP_management="yes"
+export PEP="yes"
+export PDP="yes"
+export Patch4367="yes"
