@@ -64,10 +64,10 @@ else
   exitFailure
 fi
 
-if [ -z "$PAP_HOME" ]; then
-  echo "You need to set PAP_HOME in order to run this script"
-  exitFailure
-fi
+#if [ -z "$PAP_HOME" ]; then
+#  echo "You need to set PAP_HOME in order to run this script"
+#  exitFailure
+#fi
 
 #########
 # START #
@@ -246,6 +246,68 @@ echo "*Running $SUITE tests"
 unset tests_list
 
 if [ "x${Patch4367}" = "xyes" ]; then
+  pushd ./tests/$SUITE >> /dev/null
+
+  declare -a tests_list
+  tests_list=`ls -1 *.sh`
+
+  for item in ${tests_list[*]}
+  do
+    rm -rf ${item}_result.txt
+    ./$item  > $loglocation/${item}_result.txt 2>&1
+    if [ $? -ne 0 ]; then
+      echo "$item FAILED"
+      failed=yes
+      tests_failed=( "${tests_failed[@]}" "$item" )
+    else
+      echo "$item PASSED"
+    fi
+  done
+  popd >> /dev/null
+else
+  echo "* $SUITE tests skipped"
+fi
+
+####################                                                                                                   
+# Task 18586 tests #                                                                                                     
+####################                                                                                             
+
+SUITE="Task_18586"        
+echo "*Running $SUITE tests"
+unset tests_list
+
+if [ "x${Task18586}" = "xyes" ]; then
+  pushd ./tests/$SUITE >> /dev/null
+
+  declare -a tests_list
+  tests_list=`ls -1 *.sh`
+
+  for item in ${tests_list[*]}
+  do
+    rm -rf ${item}_result.txt
+    ./$item  > $loglocation/${item}_result.txt 2>&1
+    if [ $? -ne 0 ]; then
+      echo "$item FAILED"
+      failed=yes
+      tests_failed=( "${tests_failed[@]}" "$item" )
+    else
+      echo "$item PASSED"
+    fi
+  done
+  popd >> /dev/null
+else
+  echo "* $SUITE tests skipped"
+fi
+
+####################                                                                                                   
+# Task 20989 tests #                                                                                                     
+####################                                                                                             
+
+SUITE="Task_20989"        
+echo "*Running $SUITE tests"
+unset tests_list
+
+if [ "x${Task20989}" = "xyes" ]; then
   pushd ./tests/$SUITE >> /dev/null
 
   declare -a tests_list

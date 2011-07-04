@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <!-- 
-	$Id$
+	$Id: log4j.xml,v 1.1 2010/09/21 14:28:58 happonen Exp $
 	
 	Copyright (c) 2004. Members of the EGEE Collaboration. http://www.eu-egee.org
 	

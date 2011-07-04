@@ -6,19 +6,14 @@
 echo `date`
 echo "---Test-PAP-FUNC-2---"
 
-if [ -z $PAP_HOME ]
-then
-    if [ -d /usr/share/argus/pap ]
-    then
+if [ -z $PAP_HOME ]; then
+    if [ -d /usr/share/argus/pap ]; then
         PAP_HOME=/usr/share/argus/pap
+    elif [ -d /opt/argus/pap ]; then
+		PAP_HOME=/opt/argus/pap
     else
-        if [ -d /opt/argus/pap ]
-        then
-            PAP_HOME=/opt/argus/pap
-        else
-            echo "PAP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
+        echo "PAP_HOME not set, not found at standard locations. Exiting."
+        exit 2;
     fi
 fi
 
