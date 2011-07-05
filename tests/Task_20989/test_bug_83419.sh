@@ -55,7 +55,7 @@ fi
 #########################################################
 # Prepare the environment (conf-files, e.t.c) for the TEST
 #
-is_proxy=”yes”
+is_proxy="yes"
 
 if [ $is_proxy ]; then
 	USERCERT=~/user_certificates/test_user_1_cert.pem
@@ -72,7 +72,7 @@ fi
 
 if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
 	echo \
-	‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
+	'"dteam" "voms.hellasgrid.gr" "15004" "/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr" "dteam"'\
 	> /etc/vomses/dteam-voms.cern.ch
 fi
 
@@ -110,7 +110,7 @@ tar -cf ${target_dir}/${target_file_dir}.tar  ${source_dir}/${target_file_dir} -
 
 # Now enter the userids etc
 # /etc/grid-security/grid-mapfile
-# “/dteam” .dteam
+# "/dteam" .dteam
 # <DN> <user id>
 target_file=/etc/grid-security/grid-mapfile
 DTEAM=.dteam
@@ -178,7 +178,7 @@ pap_start
 #
 # Here’s the string format
 # subject= /C=CH/O=CERN/OU=GD/CN=Test user 1
-# so should match the first “subject= “ and keep the rest
+# so should match the first "subject= " and keep the rest
 # of the string
 obligation_dn=`openssl x509 -in $USERCERT -subject -noout -nameopt RFC2253 | sed 's/subject= //'`
 echo subject string="$obligation_dn"
