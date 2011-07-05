@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# Test
-
 script_name=`basename $0`
 passed="yes"
 
