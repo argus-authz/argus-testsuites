@@ -330,6 +330,39 @@ else
   echo "* $SUITE tests skipped"
 fi
 
+
+####################                                                                                                   
+# Task 21931 tests #                                                                                                     
+####################                                                                                             
+
+SUITE="Task_21931"
+echo "*Running $SUITE tests"
+unset tests_list
+
+if [ "x${Task21931}" = "xyes" ]; then
+  pushd ./tests/$SUITE >> /dev/null
+
+  declare -a tests_list
+  tests_list=`ls -1 *.sh`
+
+  for item in ${tests_list[*]}
+  do
+    rm -rf ${item}_result.txt
+    ./$item  > $loglocation/${item}_result.txt 2>&1
+    if [ $? -ne 0 ]; then
+      echo "$item FAILED"
+      failed=yes
+      tests_failed=( "${tests_failed[@]}" "$item" )
+    else
+      echo "$item PASSED"
+    fi
+  done
+  popd >> /dev/null
+else
+  echo "* $SUITE tests skipped"
+fi
+
+
 #########################
 # Analyse tests outcome #
 #########################
