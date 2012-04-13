@@ -33,7 +33,7 @@ failed="no"
 #################################################################
 echo "1) testing pdp status"
 
-/etc/rc.d/init.d/$PDP_CTRL status | grep -q "service: $PDP_INFO"
+/etc/rc.d/init.d/$PDP_CTRL status | grep -q "Service: $PDP_INFO"
 if [ $? -eq 0 ]; then
   echo "OK"
 else

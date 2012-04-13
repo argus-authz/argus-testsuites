@@ -32,7 +32,7 @@ failed="no"
 #################################################################
 echo "1) testing pep status"
 
-/etc/rc.d/init.d/$PEP_CTRL status | grep -q "service: $PEP_INFO"
+/etc/rc.d/init.d/$PEP_CTRL status | grep -q "Service: $PEP_INFO"
 if [ $? -eq 0 ]; then
     echo "OK"
 else
