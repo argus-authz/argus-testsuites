@@ -4,37 +4,24 @@
 #Note: Each single test has this assumption
 
 
-#Set the Home directory according the installation type (EMI or Glite)
+#Set the Home directory
 if [ -z $PDP_HOME ]
 then
     if [ -d /usr/share/argus/pdp ]
     then
         PAP_HOME=/usr/share/argus/pdp
     else
-        if [ -d /opt/argus/pdp ]
-        then
-            PAP_HOME=/opt/argus/pdp
-        else
-            echo "PDP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
+        echo "PDP_HOME not set, not found at standard locations. Exiting."
+        exit 2;
     fi
 fi
 
-#Set the Process name according the installation type (EMI or Glite)
+#Set the Process name
 PDP_CTRL=argus-pdp
-if [ -f /etc/rc.d/init.d/pdp ]
-then
-    PDP_CTRL=pdp;
-fi
 echo "PDP_CTRL set to: $PDP_CTRL"
 
-#Set the Status info according the installation type (EMI or Glite)
-PDP_INFO=Argus
-if [ "$PDP_CTRL" = "pdp" ]
-then
-    PDP_INFO=pdp;
-fi
+#Set the Status info
+PDP_INFO="Argus PDP"
 echo "$PDP_INFO"
 
 echo `date`
