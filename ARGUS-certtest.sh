@@ -19,37 +19,38 @@
 ##############################################################################
 #
 # AUTHORS: Gianni Pucciani, CERN
+#          Joël Casutt, SWITCH
 #
 ##############################################################################
 
 showUsage ()
 {
- echo "                                           "
- echo "Usage:  ARGUS-certtest.sh [-f <conf.file>]    "
- echo "  <conf.file> Configuration file, default is ARGUS-certconfig"
- echo "                                           "
+    echo "                                           "
+    echo "Usage:  ARGUS-certtest.sh [-f <conf.file>]    "
+    echo "  <conf.file> Configuration file, default is ARGUS-certconfig"
+    echo "                                           "
 }
 
 exitFailure ()
 {
-echo "------------------------------------------------"
-echo "END `date`"
-echo "-TEST FAILED-"
-exit -1
+    echo "------------------------------------------------"
+    echo "END `date`"
+    echo "-TEST FAILED-"
+    exit -1
 }
 
 #######################
 #Parsing the arguments#
 #######################
 if [ "$1" = "-h" ] || [ "$1" = "-help" ] || [ "$1" = "--help" ] || [ $# -gt 2 ]; then
-  showUsage
-  exit 2
+    showUsage
+    exit 2
 fi
 
 if [ "$1" = "-f" ]; then
-  conffile=$2
+    conffile=$2
 else
-  conffile="./ARGUS-certconfig"
+    conffile="./ARGUS-certconfig"
 fi
 
 ###################################
@@ -57,17 +58,37 @@ fi
 ###################################
 
 if [ -e $conffile ]; then
-  echo "Using $conffile"
-  source $conffile
+    echo "Using $conffile"
+    source $conffile
 else
-  echo "Config File $conffile does not exist"
-  exitFailure
+    echo "Config File $conffile does not exist"
+    exitFailure
 fi
 
-#if [ -z "$PAP_HOME" ]; then
-#  echo "You need to set PAP_HOME in order to run this script"
-#  exitFailure
-#fi
+current_path=`pwd`
+export FRAMEWORK=$current_path/framework
+
+#####################################
+# Make a Backup of the Config-Files #
+#####################################
+
+if [ -z "$SCRIPTBACKUPLOCATION" ]; then
+    mkdir -p $SCRIPTBACKUPLOCATION 
+fi
+
+if [ ! -d $SCRIPTBACKUPLOCATION ];then
+    echo   "Error while creating backup directory $SCRIPTBACKUPLOCATION"
+    exitFailure
+else
+    echo "Backup files will be stored in $SCRIPTBACKUPLOCATION"
+    cp $PDP_CONF/$PDP_INI $SCRIPTBACKUPLOCATION/$PDP_INI
+    cp $PEP_CONF/$PEP_INI $SCRIPTBACKUPLOCATION/$PEP_INI
+    cp $PAP_CONF/$PAP_ADMIN_INI $SCRIPTBACKUPLOCATION/$PAP_ADMIN_INI 
+    cp $PAP_CONF/$PAP_AUTH_INI $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI
+    cp $PAP_CONF/$PAP_CONF_INI $SCRIPTBACKUPLOCATION/$PAP_CONF_INI
+fi
+
+
 
 #########
 # START #
@@ -123,8 +144,6 @@ if [ "x${PAP_CLI}" = "xyes" ]; then
   tests_list=("${tests_list[@]}" "test-policy-from-file.sh")
   tests_list=("${tests_list[@]}" "test-upp-from-file.sh")
  
-#  tests_list=( test-policy-from-file.sh test-remove-all-policies.sh test-remove-policies.sh test-PAP-FUNC-1.sh test-list-policies.sh test-upp-from-file.sh )
-
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
@@ -160,8 +179,6 @@ if [ "x${PAP_management}" = "xyes" ]; then
   tests_list=("${tests_list[@]}" "test-authz.sh")
   tests_list=("${tests_list[@]}" "update-pap.sh")
  
-#  tests_list=( test-policy-from-file.sh test-remove-all-policies.sh test-remove-policies.sh test-PAP-FUNC-1.sh test-list-policies.sh test-upp-from-file.sh )
-
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
@@ -190,8 +207,6 @@ if [ "x${PDP}" = "xyes" ]; then
   declare -a tests_list
   tests_list=("${tests_list[@]}" "test-configuration.sh")
  
-#  tests_list=( test-policy-from-file.sh test-remove-all-policies.sh test-remove-policies.sh test-PAP-FUNC-1.sh test-list-policies.sh test-upp-from-file.sh )
-
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt

@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
-#Assumptions: The PAP is running with a correct configuration file
-#Note: Each single test has this assumption
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
 
+# Start test
 HOSTNAME=`hostname`
 hostname -f > /dev/null 2>&1
 if [ $? -eq 0 ]
@@ -10,62 +12,20 @@ then
     HOSTNAME=`hostname -f`
 fi
 
-if [ -z $PAP_HOME ]
-then
-    if [ -d /usr/share/argus/pap ]
-    then
-        PAP_HOME=/usr/share/argus/pap
-    else
-        if [ -d /opt/argus/pap ]
-        then
-            PAP_HOME=/opt/argus/pap
-        else
-            echo "PAP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
-    fi
-fi
-
 echo `date`
 echo "---Test-PAP-FUNC-1---"
 
-conffile=$PAP_HOME/conf/pap_configuration.ini
-bkpfile=$PAP_HOME/conf/pap_configuration.bkp
-argusconffile=$PAP_HOME/conf/pap_authorization.ini
-argusbkpfile=$PAP_HOME/conf/pap_authorization.bkp
 failed="no"
 
-PAP_CTRL=argus-pap
 
-if [ -f /etc/rc.d/init.d/pap-standalone ]
-then
-    PAP_CTRL=pap-standalone    
-fi
-
-echo "PAP_CTRL set to: /etc/rc.d/init.d/$PAP_CTRL"
-
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
-
-if [ $? -ne 0 ]; then
-  echo "PAP is not running"
-  /etc/rc.d/init.d/$PAP_CTRL start; result=$?
-  sleep 5;
-  if [ $result -ne 0 ]
-  then 
-      echo "PAP is not running: A start was attempted."
-      echo "Failed"
-      exit 1
-  else
-      echo "PAP started. Proceeding."
-  fi
-fi
 
 #################################################################
 #echo "1) testing required security section"
-#/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+#$PAP_CTRL stop >>/dev/null 2>&1
 #sleep 2
-#mv -f $conffile  $bkpfile
-#cat <<EOF > $conffile
+# rm -f $PAP_CONF/$PAP_CONF_INI
+# touch $PAP_CONF/$PAP_CONF_INI
+#cat <<EOF > $PAP_CONF/$PAP_CONF_INI
 #[paps]
 ## Trusted PAPs will be listed here
 
@@ -98,29 +58,30 @@ fi
 # credentials present! At least they have been commented
 # out of the configuration file.
 #
-#/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+#$PAP_CTRL start >>/dev/null 2>&1
 #sleep 15
-# cat $conffile
-# /etc/rc.d/init.d/$PAP_CTRL status
-#/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+# cat $PAP_CONF/$PAP_CONF_INI
+# $PAP_CTRL status
+#$PAP_CTRL status | grep -q 'PAP running'
 #if [ $? -eq 0 ]; then
 #  echo "The PAP is running... should NOT be running."
 #  failed="yes"
-#  mv -f $bkpfile $conffile
+#  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
 #  echo "FAILED"
 #else
-#  mv -f $bkpfile $conffile
-#  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+#  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+#  $PAP_CTRL start >>/dev/null
 #  sleep 10
 #  echo "OK"
 #fi
 
 #################################################################
 echo "2) testing required poll_interval "
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $conffile  $bkpfile
-cat <<EOF > $conffile
+rm -f $PAP_CONF/$PAP_CONF_INI
+touch $PAP_CONF/$PAP_CONF_INI
+cat <<EOF > $PAP_CONF/$PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -148,26 +109,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $bkpfile $conffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
 else
-  mv -f $bkpfile $conffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "3) testing syntax error: missing ']'"
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $conffile  $bkpfile
-cat <<EOF > $conffile
+rm -f $PAP_CONF/$PAP_CONF_INI
+touch $PAP_CONF/$PAP_CONF_INI
+cat <<EOF > $PAP_CONF/$PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -195,26 +157,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $bkpfile $conffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
 else
-  mv -f $bkpfile $conffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "4) testing syntax error: missing '='"
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $conffile  $bkpfile
-cat <<EOF > $conffile
+rm -f $PAP_CONF/$PAP_CONF_INI
+touch $PAP_CONF/$PAP_CONF_INI
+cat <<EOF > $PAP_CONF/$PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -242,26 +205,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $bkpfile $conffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
 else
-  mv -f $bkpfile $conffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "5) testing argus syntax error: missing ']'"
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $argusconffile $argusbkpfile
-cat <<EOF > $argusconffile
+rm -f $PAP_CONF/$PAP_AUTH_INI
+touch $PAP_CONF/$PAP_AUTH_INI
+cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 [dn
 
 
@@ -273,26 +237,27 @@ cat <<EOF > $argusconffile
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $argusbkpfile $argusconffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
 else
-  mv -f $argusbkpfile $argusconffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "6) testing argus syntax error: missing ':'"
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $argusconffile $argusbkpfile
-cat <<EOF > $argusconffile
+rm -f $PAP_CONF/$PAP_AUTH_INI
+touch $PAP_CONF/$PAP_AUTH_INI
+cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 [dn]
 
 
@@ -304,26 +269,27 @@ cat <<EOF > $argusconffile
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $argusbkpfile $argusconffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
 else
-  mv -f $argusbkpfile $argusconffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "7) testing argus syntax error: missing 'permission'"
-/etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null 2>&1
+$PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-mv -f $argusconffile $argusbkpfile
-cat <<EOF > $argusconffile
+rm -f $PAP_CONF/$PAP_AUTH_INI
+touch $PAP_CONF/$PAP_AUTH_INI
+cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 [dn]
 
 
@@ -335,29 +301,27 @@ cat <<EOF > $argusconffile
 
 EOF
 
-/etc/rc.d/init.d/$PAP_CTRL start >>/dev/null 2>&1
+$PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+$PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  mv -f $argusbkpfile $argusconffile
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
 else
-  mv -f $argusbkpfile $argusconffile
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  $PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 #start/restart the server
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP not running'
+$PAP_CTRL status | grep -q 'PAP not running'
 if [ $? -eq 0 ]; then
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  $PAP_CTRL start >>/dev/null
 else
-  /etc/rc.d/init.d/$PAP_CTRL stop >>/dev/null
-  sleep 10
-  /etc/rc.d/init.d/$PAP_CTRL start >>/dev/null
+  $PAP_CTRL restart >>/dev/null
 fi
 sleep 10
 

@@ -1,8 +1,31 @@
 
-# export PAP_HOME=/opt/argus/pap
-export LOGSLOCATION=/tmp
+# Variables set to run the scripts on your system
 
-#TEST TO RUN (yes/no)
+# Locations for storing needed files
+export LOGSLOCATION=/tmp
+export SCRIPTBACKUPLOCATION=$LOGSLOCATION/scripts
+
+# Home Directories
+export PAP_HOME=/usr/share/argus/pap
+export PDP_HOME=/usr/share/argus/pdp
+export PEP_HOME=/usr/share/argus/pepd
+
+# Configuration scripts and locations
+export PDP_CONF=$PDP_HOME/conf
+export PEP_CONF=$PEP_HOME/conf
+export PAP_CONF=$PAP_HOME/conf
+export PDP_INI=pdp.ini
+export PEP_INI=pepd.ini
+export PAP_ADMIN_INI=pap-admin.ini
+export PAP_AUTH_INI=pap_authorisation.ini
+export PAP_CONF_INI=pap_configuration.ini
+
+# Init-scripts
+export PAP_CTRL=/etc/init.d/argus-pap
+export PAP_CTRL=/etc/init.d/argus-pdp
+export PEP_CTRL=/etc/init.d/argus-pepd
+
+# Tests to run (yes/no)
 export PAP_CLI="yes"
 export PAP_management="yes"
 export PEP="yes"
