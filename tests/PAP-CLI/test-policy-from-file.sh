@@ -27,7 +27,7 @@ resource ".*" {
 }
 EOF
 
-$PAP_HOME/bin/pap-admin apf $policyfile
+$T_PAP_HOME/bin/pap-admin apf $policyfile
 if [ $? -eq 0 ]; then
   echo "OK"
 else
@@ -35,8 +35,8 @@ else
   failed="yes"
 fi
 
-$PAP_HOME/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
-$PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
+$T_PAP_HOME/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
+$T_PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
 
 #########################################################
 echo "2) testing add policy from file with error"
@@ -49,7 +49,7 @@ resource ".*" {
 }
 EOF
 
-$PAP_HOME/bin/pap-admin apf $policyfile
+$T_PAP_HOME/bin/pap-admin apf $policyfile
 if [ $? -ne 0 ]; then
   echo "OK"
 else

@@ -21,11 +21,11 @@ failed="no"
 
 #################################################################
 #echo "1) testing required security section"
-#$PAP_CTRL stop >>/dev/null 2>&1
+#$T_PAP_CTRL stop >>/dev/null 2>&1
 #sleep 2
-# rm -f $PAP_CONF/$PAP_CONF_INI
-# touch $PAP_CONF/$PAP_CONF_INI
-#cat <<EOF > $PAP_CONF/$PAP_CONF_INI
+# rm -f $T_PAP_CONF/$T_PAP_CONF_INI
+# touch $T_PAP_CONF/$T_PAP_CONF_INI
+#cat <<EOF > $T_PAP_CONF/$T_PAP_CONF_INI
 #[paps]
 ## Trusted PAPs will be listed here
 
@@ -36,7 +36,7 @@ failed="no"
 
 #[repository]
 
-#location = $PAP_HOME/repository
+#location = $T_PAP_HOME/repository
 #consistency_check = false
 #consistency_check.repair = false
 
@@ -58,30 +58,30 @@ failed="no"
 # credentials present! At least they have been commented
 # out of the configuration file.
 #
-#$PAP_CTRL start >>/dev/null 2>&1
+#$T_PAP_CTRL start >>/dev/null 2>&1
 #sleep 15
-# cat $PAP_CONF/$PAP_CONF_INI
-# $PAP_CTRL status
-#$PAP_CTRL status | grep -q 'PAP running'
+# cat $T_PAP_CONF/$T_PAP_CONF_INI
+# $T_PAP_CTRL status
+#$T_PAP_CTRL status | grep -q 'PAP running'
 #if [ $? -eq 0 ]; then
 #  echo "The PAP is running... should NOT be running."
 #  failed="yes"
-#  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+#  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
 #  echo "FAILED"
 #else
-#  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
-#  $PAP_CTRL start >>/dev/null
+#  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
+#  $T_PAP_CTRL start >>/dev/null
 #  sleep 10
 #  echo "OK"
 #fi
 
 #################################################################
 echo "2) testing required poll_interval "
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_CONF_INI
-touch $PAP_CONF/$PAP_CONF_INI
-cat <<EOF > $PAP_CONF/$PAP_CONF_INI
+rm -f $T_PAP_CONF/$T_PAP_CONF_INI
+touch $T_PAP_CONF/$T_PAP_CONF_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -92,7 +92,7 @@ ordering = default
 
 [repository]
 
-location = $PAP_HOME/repository
+location = $T_PAP_HOME/repository
 consistency_check = false
 consistency_check.repair = false
 
@@ -109,27 +109,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "3) testing syntax error: missing ']'"
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_CONF_INI
-touch $PAP_CONF/$PAP_CONF_INI
-cat <<EOF > $PAP_CONF/$PAP_CONF_INI
+rm -f $T_PAP_CONF/$T_PAP_CONF_INI
+touch $T_PAP_CONF/$T_PAP_CONF_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -140,7 +140,7 @@ ordering = default
 
 [repository]
 
-location = $PAP_HOME/repository
+location = $T_PAP_HOME/repository
 consistency_check = false
 consistency_check.repair = false
 
@@ -157,27 +157,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "4) testing syntax error: missing '='"
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_CONF_INI
-touch $PAP_CONF/$PAP_CONF_INI
-cat <<EOF > $PAP_CONF/$PAP_CONF_INI
+rm -f $T_PAP_CONF/$T_PAP_CONF_INI
+touch $T_PAP_CONF/$T_PAP_CONF_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_CONF_INI
 [paps]
 ## Trusted PAPs will be listed here
 
@@ -188,7 +188,7 @@ ordering = default
 
 [repository]
 
-location = $PAP_HOME/repository
+location = $T_PAP_HOME/repository
 consistency_check = false
 consistency_check.repair = false
 
@@ -205,27 +205,27 @@ private_key = /etc/grid-security/hostkey.pem
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 15
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "5) testing argus syntax error: missing ']'"
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_AUTH_INI
-touch $PAP_CONF/$PAP_AUTH_INI
-cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
+rm -f $T_PAP_CONF/$T_PAP_AUTH_INI
+touch $T_PAP_CONF/$T_PAP_AUTH_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_AUTH_INI
 [dn
 
 
@@ -237,27 +237,27 @@ cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "6) testing argus syntax error: missing ':'"
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_AUTH_INI
-touch $PAP_CONF/$PAP_AUTH_INI
-cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
+rm -f $T_PAP_CONF/$T_PAP_AUTH_INI
+touch $T_PAP_CONF/$T_PAP_AUTH_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_AUTH_INI
 [dn]
 
 
@@ -269,27 +269,27 @@ cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 echo "7) testing argus syntax error: missing 'permission'"
-$PAP_CTRL stop >>/dev/null 2>&1
+$T_PAP_CTRL stop >>/dev/null 2>&1
 sleep 2
-rm -f $PAP_CONF/$PAP_AUTH_INI
-touch $PAP_CONF/$PAP_AUTH_INI
-cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
+rm -f $T_PAP_CONF/$T_PAP_AUTH_INI
+touch $T_PAP_CONF/$T_PAP_AUTH_INI
+cat <<EOF > $T_PAP_CONF/$T_PAP_AUTH_INI
 [dn]
 
 
@@ -301,27 +301,27 @@ cat <<EOF > $PAP_CONF/$PAP_AUTH_INI
 
 EOF
 
-$PAP_CTRL start >>/dev/null 2>&1
+$T_PAP_CTRL start >>/dev/null 2>&1
 sleep 10
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 10
   echo "OK"
 fi
 
 #################################################################
 #start/restart the server
-$PAP_CTRL status | grep -q 'PAP not running'
+$T_PAP_CTRL status | grep -q 'PAP not running'
 if [ $? -eq 0 ]; then
-  $PAP_CTRL start >>/dev/null
+  $T_PAP_CTRL start >>/dev/null
 else
-  $PAP_CTRL restart >>/dev/null
+  $T_PAP_CTRL restart >>/dev/null
 fi
 sleep 10
 

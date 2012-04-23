@@ -6,48 +6,48 @@ passed="yes"
 #########################################################
 # Test if the Services are present on the system and setting some variables
 # This is done for every test, even if the variables are not needed
-if [ -z $PAP_HOME ]; then
+if [ -z $T_PAP_HOME ]; then
 	if [ -d /usr/share/argus/pap ]; then
-		PAP_HOME=/usr/share/argus/pap
+		T_PAP_HOME=/usr/share/argus/pap
 	else
-		echo "PAP_HOME not set, not found at standard locations. Exiting."
+		echo "T_PAP_HOME not set, not found at standard locations. Exiting."
 		exit 2;
 	fi
 fi
 
-PAP_CTRL=argus-pap
+T_PAP_CTRL=argus-pap
 if [ -f /etc/rc.d/init.d/pap-standalone ]; then
-	PAP_CTRL=pap-standalone
+	T_PAP_CTRL=pap-standalone
 fi
 
 
-if [ -z $PDP_HOME ]; then
+if [ -z $T_PDP_HOME ]; then
 	if [ -d /usr/share/argus/pdp ]; then
-		PDP_HOME=/usr/share/argus/pdp
+		T_PDP_HOME=/usr/share/argus/pdp
 	else
-		echo "PDP_HOME not set, not found at standard locations. Exiting."
+		echo "T_PDP_HOME not set, not found at standard locations. Exiting."
 		exit 2;
 	fi
 fi
 
-PDP_CTRL=argus-pdp
+T_PDP_CTRL=argus-pdp
 if [ -f /etc/rc.d/init.d/pdp ]; then
-	PDP_CTRL=pdp;
+	T_PDP_CTRL=pdp;
 fi
 
 
-if [ -z $PEP_HOME ]; then
+if [ -z $T_PEP_HOME ]; then
 	if [ -d /usr/share/argus/pepd ]; then
-		PEP_HOME=/usr/share/argus/pepd
+		T_PEP_HOME=/usr/share/argus/pepd
 	else
-		echo "PEP_HOME not set, not found at standard locations. Exiting."
+		echo "T_PEP_HOME not set, not found at standard locations. Exiting."
 		exit 2;
 	fi
 fi
 
-PEP_CTRL=argus-pepd
+T_PEP_CTRL=argus-pepd
 if [ -f /etc/rc.d/init.d/pepd ]; then
-	PEP_CTRL=pepd;
+	T_PEP_CTRL=pepd;
 fi
 #########################################################
 
@@ -135,37 +135,37 @@ touch /etc/grid-security/gridmapdir/dteam002
 #########################################################
 # Now probably let's start the services.
 function pep_start {
-	/etc/rc.d/init.d/$PEP_CTRL status > /dev/null
+	/etc/rc.d/init.d/$T_PEP_CTRL status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "PEPd is not running. Starting one."
-  		/etc/rc.d/init.d/$PEP_CTRL start
+  		/etc/rc.d/init.d/$T_PEP_CTRL start
   		sleep 10
 	else
   		echo "${script_name}: Stopping PEPd."
-  		/etc/rc.d/init.d/$PEP_CTRL stop > /dev/null
+  		/etc/rc.d/init.d/$T_PEP_CTRL stop > /dev/null
   		sleep 5
   		echo "${script_name}: Starting PEPd."
-  		/etc/rc.d/init.d/$PEP_CTRL start > /dev/null
+  		/etc/rc.d/init.d/$T_PEP_CTRL start > /dev/null
   		sleep 15
 	fi
 }
 pep_start
 
 function pdp_start {
-	/etc/rc.d/init.d/$PDP_CTRL status > /dev/null
+	/etc/rc.d/init.d/$T_PDP_CTRL status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "PDP is not running. Starting one."
-		/etc/rc.d/init.d/$PDP_CTRL start
+		/etc/rc.d/init.d/$T_PDP_CTRL start
   		sleep 10
 	fi
 }
 pdp_start
 
 function pap_start {
-	/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+	/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
 	if [ $? -ne 0 ]; then
   		echo "PAP is not running"
-  		/etc/rc.d/init.d/$PAP_CTRL start;
+  		/etc/rc.d/init.d/$T_PAP_CTRL start;
   		sleep 10;
 	fi 
 }
@@ -192,15 +192,15 @@ ACTION=ANY
 RULE=permit
 OBLIGATION="http://glite.org/xacml/obligation/local-environment-map"
 
-$PAP_HOME/bin/pap-admin ap $RULE subject="${obligation_dn}" \
+$T_PAP_HOME/bin/pap-admin ap $RULE subject="${obligation_dn}" \
 			 --resource $RESOURCE \
              --action $ACTION \
              --obligation $OBLIGATION 
              
 sleep 5;
 
-/etc/rc.d/init.d/$PEP_CTRL clearcache
-/etc/rc.d/init.d/$PDP_CTRL reloadpolicy #without this, the policy wouldn't be visible for ~5min.
+/etc/rc.d/init.d/$T_PEP_CTRL clearcache
+/etc/rc.d/init.d/$T_PDP_CTRL reloadpolicy #without this, the policy wouldn't be visible for ~5min.
 #########################################################
 
 
@@ -212,19 +212,19 @@ echo "---Test: Pap-admin aace CN=.../... causes Pap-crash at restart---"
 echo "1) test if Pap restart after a kerberized DN was added as acl:"
 
 FAKE_KERB_DN="/CN=host/argus.example.ch/C=CH"
-$PAP_HOME/bin/pap-admin aace $FAKE_KERB_DN ALL
+$T_PAP_HOME/bin/pap-admin aace $FAKE_KERB_DN ALL
 echo "added a kerberized DN to pap"
 sleep 10
-/etc/rc.d/init.d/$PAP_CTRL restart;
+/etc/rc.d/init.d/$T_PAP_CTRL restart;
 echo "Pap-restarted ..."
 sleep 10;
-$PAP_HOME/bin/pap-admin lp > /dev/null
+$T_PAP_HOME/bin/pap-admin lp > /dev/null
 if [ $? -ne 0 ]; then
 	passed="no";
   	echo "PAP crashed"
 else
 	echo "Succesfull"
-	$PAP_HOME/bin/pap-admin race $FAKE_KERB_DN
+	$T_PAP_HOME/bin/pap-admin race $FAKE_KERB_DN
 fi 
 echo "-------------------------------"
 #########################################################

@@ -9,46 +9,46 @@ source $FRAMEWORK/start_services.sh
 #################################################################
 echo "1) testing missing configuration file"
 
-rm -f $PAP_CONF/$PAP_CONF_INI
-$PAP_CTRL restart >>/dev/null
+rm -f $T_PAP_CONF/$T_PAP_CONF_INI
+$T_PAP_CTRL restart >>/dev/null
 sleep 10
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
   echo "FAILED"
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_CONF_INI $PAP_CONF/$PAP_CONF_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI $T_PAP_CONF/$T_PAP_CONF_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 40
   echo "OK"
 fi
 
 #################################################################
 echo "2) testing missing argus file"
-rm -f $PAP_CONF/$PAP_AUTH_INI
+rm -f $T_PAP_CONF/$T_PAP_AUTH_INI
 
-$PAP_CTRL restart >>/dev/null
+$T_PAP_CTRL restart >>/dev/null
 sleep 10
-$PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -eq 0 ]; then
   failed="yes"
   echo "FAILED"
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
 else
-  cp -f $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI $PAP_CONF/$PAP_AUTH_INI
-  $PAP_CTRL start >>/dev/null
+  cp -f $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI $T_PAP_CONF/$T_PAP_AUTH_INI
+  $T_PAP_CTRL start >>/dev/null
   sleep 40
   echo "OK"
 fi
 
 #################################################################
 #start/restart the server
-$PAP_CTRL status | grep -q 'PAP not running'
+$T_PAP_CTRL status | grep -q 'PAP not running'
 if [ $? -eq 0 ]; then
-  $PAP_CTRL start >>/dev/null
+  $T_PAP_CTRL start >>/dev/null
 else
-  $PAP_CTRL restart >>/dev/null
+  $T_PAP_CTRL restart >>/dev/null
 fi
 sleep 10
 

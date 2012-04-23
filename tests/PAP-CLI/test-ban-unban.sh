@@ -9,16 +9,16 @@ echo `date`
 echo "---Test-BAN/UNBAN---"
 echo "1) testing user ban"
 
-${PAP_HOME}/bin/pap-admin ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
+${T_PAP_HOME}/bin/pap-admin ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
 
 if [ $? -eq 0 ]; then
   echo "OK"
   echo "2) testing user unban"
-  ${PAP_HOME}/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
+  ${T_PAP_HOME}/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
   if [ $? -eq 0 ]; then
     echo "OK"
     echo "3) testing unbanning non existing subject"
-    ${PAP_HOME}/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
+    ${T_PAP_HOME}/bin/pap-admin un-ban subject "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=user/CN=999999/CN=user name"
     if [ $? -ne 0 ]; then
       echo "OK"
       echo "---Test-BAN/UNBAND: TEST PASSED---"

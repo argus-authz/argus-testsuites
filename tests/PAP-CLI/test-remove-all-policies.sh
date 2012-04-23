@@ -33,24 +33,24 @@ resource "resource_3" {
 }
 
 EOF
-$PAP_HOME/bin/pap-admin apf $policyfile
+$T_PAP_HOME/bin/pap-admin apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
   exit 1
 fi
 
 #remove all
-$PAP_HOME/bin/pap-admin rap
+$T_PAP_HOME/bin/pap-admin rap
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $PAP_HOME/bin/pap-admin rap"
+  echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
   exit 1
 fi
 
 
 #Retrieve resource id
-lines=`$PAP_HOME/bin/pap-admin lp -sai | egrep -c 'id='`
+lines=`$T_PAP_HOME/bin/pap-admin lp -sai | egrep -c 'id='`
 
 if [ $lines -eq 0 ]; then
   echo "OK" 

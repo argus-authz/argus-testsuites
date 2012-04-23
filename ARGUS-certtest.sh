@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ##############################################################################
 # Copyright (c) Members of the EGEE Collaboration. 2009.
 # See http://www.eu-egee.org/partners/ for details on the copyright
@@ -22,6 +22,31 @@
 #          Joël Casutt, SWITCH
 #
 ##############################################################################
+
+#############################################
+# Intercept a possible CTRL-C and handle it #
+#############################################
+
+trap finally 1 2 3 5
+
+current_path=`pwd`
+export FRAMEWORK=$current_path/framework
+
+finally(){
+    echo "Try to shutdown gracefully and restore the original state..."
+    source $FRAMEWORK/start_services.sh
+    rm -rf /tmp/scripts
+    exit 0
+}
+
+#################
+# Preliminaries #
+#################
+
+if [ `id -u` -ne 0 ]; then
+    echo "You need root privileges to run this script"
+    exit 1
+fi 
 
 showUsage ()
 {
@@ -65,27 +90,22 @@ else
     exitFailure
 fi
 
-current_path=`pwd`
-export FRAMEWORK=$current_path/framework
-
 #####################################
 # Make a Backup of the Config-Files #
 #####################################
 
-if [ -z "$SCRIPTBACKUPLOCATION" ]; then
-    mkdir -p $SCRIPTBACKUPLOCATION 
-fi
+mkdir -p $SCRIPTBACKUPLOCATION 
 
 if [ ! -d $SCRIPTBACKUPLOCATION ];then
     echo   "Error while creating backup directory $SCRIPTBACKUPLOCATION"
     exitFailure
 else
     echo "Backup files will be stored in $SCRIPTBACKUPLOCATION"
-    cp $PDP_CONF/$PDP_INI $SCRIPTBACKUPLOCATION/$PDP_INI
-    cp $PEP_CONF/$PEP_INI $SCRIPTBACKUPLOCATION/$PEP_INI
-    cp $PAP_CONF/$PAP_ADMIN_INI $SCRIPTBACKUPLOCATION/$PAP_ADMIN_INI 
-    cp $PAP_CONF/$PAP_AUTH_INI $SCRIPTBACKUPLOCATION/$PAP_AUTH_INI
-    cp $PAP_CONF/$PAP_CONF_INI $SCRIPTBACKUPLOCATION/$PAP_CONF_INI
+    cp $T_PDP_CONF/$T_PDP_INI $SCRIPTBACKUPLOCATION/$T_PDP_INI
+    cp $T_PEP_CONF/$T_PEP_INI $SCRIPTBACKUPLOCATION/$T_PEP_INI
+    cp $T_PAP_CONF/$T_PAP_ADMIN_INI $SCRIPTBACKUPLOCATION/$T_PAP_ADMIN_INI 
+    cp $T_PAP_CONF/$T_PAP_AUTH_INI $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI
+    cp $T_PAP_CONF/$T_PAP_CONF_INI $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI
 fi
 
 

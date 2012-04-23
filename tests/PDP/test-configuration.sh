@@ -5,20 +5,20 @@
 
 
 #Set the Home directory
-if [ -z $PDP_HOME ]
+if [ -z $T_PDP_HOME ]
 then
     if [ -d /usr/share/argus/pdp ]
     then
-        PAP_HOME=/usr/share/argus/pdp
+        T_PAP_HOME=/usr/share/argus/pdp
     else
-        echo "PDP_HOME not set, not found at standard locations. Exiting."
+        echo "T_PDP_HOME not set, not found at standard locations. Exiting."
         exit 2;
     fi
 fi
 
 #Set the Process name
-PDP_CTRL=argus-pdp
-echo "PDP_CTRL set to: $PDP_CTRL"
+T_PDP_CTRL=argus-pdp
+echo "T_PDP_CTRL set to: $T_PDP_CTRL"
 
 #Set the Status info
 PDP_INFO="Argus PDP"
@@ -27,13 +27,13 @@ echo "$PDP_INFO"
 echo `date`
 echo "---Test-PDP-Configuration---"
 
-conffile=$PDP_HOME/conf/pdp.ini
+conffile=$T_PDP_HOME/conf/pdp.ini
 failed="no"
 
 #################################################################
 echo "1) testing pdp status"
 
-/etc/rc.d/init.d/$PDP_CTRL status | grep -q "Service: $PDP_INFO"
+/etc/rc.d/init.d/$T_PDP_CTRL status | grep -q "Service: $PDP_INFO"
 if [ $? -eq 0 ]; then
   echo "OK"
 else

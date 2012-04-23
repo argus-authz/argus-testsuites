@@ -6,54 +6,54 @@ policyfile=policyfile.txt
 obligationfile=obligationfile.txt
 
 ## This is the needed bit to make EGEE/EMI compatible tests
-if [ -z $PAP_HOME ]
+if [ -z $T_PAP_HOME ]
 then
     if [ -d /usr/share/argus/pap ]
     then
-        PAP_HOME=/usr/share/argus/pap
+        T_PAP_HOME=/usr/share/argus/pap
     else
         if [ -d /opt/argus/pap ]
         then
-            PAP_HOME=/opt/argus/pap
+            T_PAP_HOME=/opt/argus/pap
         else
-            echo "PAP_HOME not set, not found at standard locations. Exiting."
+            echo "T_PAP_HOME not set, not found at standard locations. Exiting."
             exit 2;
         fi
     fi
 fi
 
-if [ -z $PEP_HOME ]
+if [ -z $T_PEP_HOME ]
 then
     if [ -d /usr/share/argus/pepd ]
     then
-        PEP_HOME=/usr/share/argus/pepd
+        T_PEP_HOME=/usr/share/argus/pepd
     else
         if [ -d /opt/argus/pepd ]
         then
-            PEP_HOME=/opt/argus/pepd
+            T_PEP_HOME=/opt/argus/pepd
         else
-            echo "PEP_HOME not set, not found at standard locations. Exiting."
+            echo "T_PEP_HOME not set, not found at standard locations. Exiting."
             exit 2;
         fi
     fi
 fi
 
 
-PEP_CTRL=argus-pepd
-if [ -f /etc/rc.d/init.d/pepd ];then PEP_CTRL=pepd;fi
-echo "PEP_CTRL set to: /etc/rc.d/init.d/$PEP_CTRL"
-PDP_CTRL=argus-pdp
-if [ -f /etc/rc.d/init.d/pdp ];then PDP_CTRL=pdp;fi
-echo "PDP_CTRL set to: /etc/rc.d/init.d/$PDP_CTRL"
-PAP_CTRL=argus-pap
+T_PEP_CTRL=argus-pepd
+if [ -f /etc/rc.d/init.d/pepd ];then T_PEP_CTRL=pepd;fi
+echo "T_PEP_CTRL set to: /etc/rc.d/init.d/$T_PEP_CTRL"
+T_PDP_CTRL=argus-pdp
+if [ -f /etc/rc.d/init.d/pdp ];then T_PDP_CTRL=pdp;fi
+echo "T_PDP_CTRL set to: /etc/rc.d/init.d/$T_PDP_CTRL"
+T_PAP_CTRL=argus-pap
 if [ -f /etc/rc.d/init.d/pap-standalone ];then
-    PAP_CTRL=pap-standalone
+    T_PAP_CTRL=pap-standalone
 fi
-echo "PAP_CTRL set to: /etc/rc.d/init.d/$PAP_CTRL"
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+echo "T_PAP_CTRL set to: /etc/rc.d/init.d/$T_PAP_CTRL"
+/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -ne 0 ]; then
   echo "PAP is not running"
-  /etc/rc.d/init.d/$PAP_CTRL start
+  /etc/rc.d/init.d/$T_PAP_CTRL start
   sleep 10
 fi
 
@@ -61,7 +61,7 @@ PEPCLI=pepcli
 if [ -f /opt/glite/bin/pepcli ];then PEPCLI=/opt/glite/bin/pepcli;fi
 echo "pepcli command used as: $PEPCLI"
 
-pep_config="$PEP_HOME/conf/pepd.ini"
+pep_config="$T_PEP_HOME/conf/pepd.ini"
 pep_config_saved="/tmp/pepd.ini.saved"
 
 ## To here for EGEE/EMI compatible tests
@@ -192,17 +192,17 @@ echo $preferDNForPrimaryGroupName >> ${pep_config}; echo $preferDNForPrimaryGrou
 # Now probably should start the services and test whether I can get an account.
 
 function pep_start {
-/etc/rc.d/init.d/$PEP_CTRL status > /dev/null
+/etc/rc.d/init.d/$T_PEP_CTRL status > /dev/null
 if [ $? -ne 0 ]; then
   echo "PEPd is not running. Starting one."
-  /etc/rc.d/init.d/$PEP_CTRL start
+  /etc/rc.d/init.d/$T_PEP_CTRL start
   sleep 10
 else
   echo "${script_name}: Stopping PEPd."
-  /etc/rc.d/init.d/$PEP_CTRL stop > /dev/null
+  /etc/rc.d/init.d/$T_PEP_CTRL stop > /dev/null
   sleep 5
   echo "${script_name}: Starting PEPd."
-  /etc/rc.d/init.d/$PEP_CTRL start > /dev/null
+  /etc/rc.d/init.d/$T_PEP_CTRL start > /dev/null
   sleep 15
 fi
 }
@@ -210,10 +210,10 @@ fi
 pep_start
 
 function pdp_start {
-/etc/rc.d/init.d/$PDP_CTRL status > /dev/null
+/etc/rc.d/init.d/$T_PDP_CTRL status > /dev/null
 if [ $? -ne 0 ]; then
   echo "PDP is not running. Starting one."
-  /etc/rc.d/init.d/$PDP_CTRL start
+  /etc/rc.d/init.d/$T_PDP_CTRL start
   sleep 10
 fi
 }
@@ -223,10 +223,10 @@ pdp_start
 # use a PAP to enter a policy and an obligation?
 
 function pap_start {
-/etc/rc.d/init.d/$PAP_CTRL status | grep -q 'PAP running'
+/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -ne 0 ]; then
   echo "PAP is not running"
-  /etc/rc.d/init.d/$PAP_CTRL start;
+  /etc/rc.d/init.d/$T_PAP_CTRL start;
   sleep 10;
 fi 
 }
@@ -234,10 +234,10 @@ fi
 pap_start
 
 # Remove all policies defined for the default pap
-$PAP_HOME/bin/pap-admin rap
+$T_PAP_HOME/bin/pap-admin rap
 if [ $? -ne 0 ]; then
   echo "Error cleaning the default pap"
-  echo "Failed command: $PAP_HOME/bin/pap-admin rap"
+  echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
   exit 1
 fi
 
@@ -251,15 +251,15 @@ OBLIGATION="http://glite.org/xacml/obligation/local-environment-map"
 OPTS=" -v "
 OPTS=" "
 
-$PAP_HOME/bin/pap-admin $OPTS ap --resource resource_1 \
+$T_PAP_HOME/bin/pap-admin $OPTS ap --resource resource_1 \
              --action testwerfer \
              --obligation $OBLIGATION ${RULE} subject="${obligation_dn}"
 
-# $PAP_HOME/bin/pap-admin lp -srai
+# $T_PAP_HOME/bin/pap-admin lp -srai
 
 ###############################################################
 
-/etc/rc.d/init.d/$PDP_CTRL reloadpolicy
+/etc/rc.d/init.d/$T_PDP_CTRL reloadpolicy
 
 ###############################################################
 

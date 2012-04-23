@@ -13,7 +13,7 @@ echo "---Test-List-Policies---"
 ###############################################################
 echo "1) testing list policies on an empty repository"
 
-$PAP_HOME/bin/pap-admin lp 
+$T_PAP_HOME/bin/pap-admin lp 
 
 if [ $? -eq 0 ]; then
   echo "OK" 
@@ -47,15 +47,15 @@ resource "resource_3" {
 }
 
 EOF
-$PAP_HOME/bin/pap-admin apf $policyfile
+$T_PAP_HOME/bin/pap-admin apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
   exit 1
 fi
 
 #Retrieve resource id
-lines=`$PAP_HOME/bin/pap-admin lp -sai | egrep -c 'id='`
+lines=`$T_PAP_HOME/bin/pap-admin lp -sai | egrep -c 'id='`
 
 if [ $lines -eq 9 ]; then
   echo "OK" 
@@ -69,7 +69,7 @@ fi
 echo "2) testing list policies with wrong pap-alias"
 
 #Retrieve resource id
-$PAP_HOME/bin/pap-admin lp -sai --pap "dummy_pap"
+$T_PAP_HOME/bin/pap-admin lp -sai --pap "dummy_pap"
 
 if [ $? -ne 0 ]; then
   echo "OK" 

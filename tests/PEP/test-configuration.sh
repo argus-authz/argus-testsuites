@@ -4,18 +4,18 @@
 #Note: Each single test has this assumption
 
 #Set the Home directory according the installation type (EMI or Glite)
-if [ -z $PEP_HOME ]; then
+if [ -z $T_PEP_HOME ]; then
     if [ -d /usr/share/argus/pepd ]; then
-        PEP_HOME=/usr/share/argus/pepd
+        T_PEP_HOME=/usr/share/argus/pepd
     else
-        echo "PEP_HOME not set, not found at standard locations. Exiting."
+        echo "T_PEP_HOME not set, not found at standard locations. Exiting."
         exit 2;
     fi
 fi
 
 #Set the Process name
-PEP_CTRL=argus-pepd
-echo "PEP_CTRL set to: $PEP_CTRL"
+T_PEP_CTRL=argus-pepd
+echo "T_PEP_CTRL set to: $T_PEP_CTRL"
 
 #Set the Status info
 PEP_INFO='Argus PEP Server'
@@ -24,15 +24,15 @@ echo "PEP_INFO set to: $PEP_INFO"
 echo `date`
 echo "---Test-PEP-Configuration---"
 
-conffile=$PEP_HOME/conf/pepd.ini
-bkpconffile=$PEP_HOME/conf/pepd.bkp
-bkpconffile2=$PEP_HOME/conf/pepd.bkp2
+conffile=$T_PEP_HOME/conf/pepd.ini
+bkpconffile=$T_PEP_HOME/conf/pepd.bkp
+bkpconffile2=$T_PEP_HOME/conf/pepd.bkp2
 failed="no"
 
 #################################################################
 echo "1) testing pep status"
 
-/etc/rc.d/init.d/$PEP_CTRL status | grep -q "Service: $PEP_INFO"
+/etc/rc.d/init.d/$T_PEP_CTRL status | grep -q "Service: $PEP_INFO"
 if [ $? -eq 0 ]; then
     echo "OK"
 else
@@ -42,12 +42,12 @@ fi
 
 #################################################################
 echo "2) testing pep with SSL"
-/etc/rc.d/init.d/$PEP_CTRL stop
+/etc/rc.d/init.d/$T_PEP_CTRL stop
 mv $conffile $bkpconffile
 #Insert SSL option
 sed '/SERVICE/a\enableSSL = true' $bkpconffile > $conffile
 
-/etc/rc.d/init.d/$PEP_CTRL start
+/etc/rc.d/init.d/$T_PEP_CTRL start
 sleep 5
 if [ $? -eq 0 ]; then
     echo "OK"
@@ -59,9 +59,9 @@ fi
 #################################################################
 
 echo "3) testing pep with no config file"
-/etc/rc.d/init.d/$PEP_CTRL stop
+/etc/rc.d/init.d/$T_PEP_CTRL stop
 mv $conffile $bkpconffile2
-/etc/rc.d/init.d/$PEP_CTRL start
+/etc/rc.d/init.d/$T_PEP_CTRL start
 sleep 5
 if [ $? -ne 0 ] ; then
     echo "OK"
@@ -74,7 +74,7 @@ fi
 
 mv $bkpconffile $conffile
 rm -f $bkpconffile2
-/etc/rc.d/init.d/$PEP_CTRL restart >>/dev/null
+/etc/rc.d/init.d/$T_PEP_CTRL restart >>/dev/null
 sleep 5
 
 if [ $failed == "yes" ]; then

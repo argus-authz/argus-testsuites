@@ -14,7 +14,7 @@ echo `date`
 echo "---Test-Update-Policy-From-File---"
 echo "1) testing upf with non existing file"
 
-$PAP_HOME/bin/pap-admin upf resource_id dummy.txt
+$T_PAP_HOME/bin/pap-admin upf resource_id dummy.txt
 
 if [ $? -ne 0 ]; then
   echo "OK"
@@ -34,10 +34,10 @@ resource "resource_1" {
     }
 }
 EOF
-$PAP_HOME/bin/pap-admin apf $policyfile
+$T_PAP_HOME/bin/pap-admin apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
   exit 1
 fi
 
@@ -51,7 +51,7 @@ resource "resource_1" {
 }
 EOF
 
-$PAP_HOME/bin/pap-admin upf dummy-id-999 $policyfile
+$T_PAP_HOME/bin/pap-admin upf dummy-id-999 $policyfile
 if [ $? -ne 0 ]; then
   echo "OK" 
 else
@@ -72,9 +72,9 @@ resource "resource_1" {
 }
 EOF
 
-id=`$PAP_HOME/bin/pap-admin lp -srai | egrep 'id=[^public]' | sed 's/id=//'`
+id=`$T_PAP_HOME/bin/pap-admin lp -srai | egrep 'id=[^public]' | sed 's/id=//'`
 echo "ID=$id"
-$PAP_HOME/bin/pap-admin upf $id $policyfile
+$T_PAP_HOME/bin/pap-admin upf $id $policyfile
 if [ $? -eq 0 ]; then
   echo "OK" 
 else
@@ -95,14 +95,14 @@ action ".*" {
 EOF
 
 #Retrieve action id and update policy
-id=`$PAP_HOME/bin/pap-admin lp -srai | egrep 'id=public' | awk '{print $1}' | sed 's/id=//'`
+id=`$T_PAP_HOME/bin/pap-admin lp -srai | egrep 'id=public' | awk '{print $1}' | sed 's/id=//'`
 echo "ID=$id"
-$PAP_HOME/bin/pap-admin upf $id $policyfile
+$T_PAP_HOME/bin/pap-admin upf $id $policyfile
 if [ $? -eq 0 ]; then
   echo "OK" 
 else
   echo "Failed"
-  echo "Command run was: $PAP_HOME/bin/pap-admin upf $id $policyfile"
+  echo "Command run was: $T_PAP_HOME/bin/pap-admin upf $id $policyfile"
   failed="yes"
 fi
 

@@ -9,16 +9,16 @@ echo `date`
 echo "---Test-BAN/UNBAN-FQAN---"
 echo "1) testing fqan ban"
 
-$PAP_HOME/bin/pap-admin ban fqan "/badvo"
+$T_PAP_HOME/bin/pap-admin ban fqan "/badvo"
 
 if [ $? -eq 0 ]; then
   echo "OK"
   echo "2) testing fqan unban"
-  $PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
+  $T_PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
   if [ $? -eq 0 ]; then
     echo "OK"
     echo "3) testing unbanning non existing fqan"
-    $PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
+    $T_PAP_HOME/bin/pap-admin un-ban fqan "/badvo"
     if [ $? -ne 0 ]; then
       echo "OK"
       echo "---Test-BAN/UNBAND-FQAN: TEST PASSED---"
