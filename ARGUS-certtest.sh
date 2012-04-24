@@ -90,6 +90,13 @@ else
     exitFailure
 fi
 
+#########
+# START #
+#########
+
+echo "START `date` "
+echo "------------------------------------------------"
+
 #####################################
 # Make a Backup of the Config-Files #
 #####################################
@@ -107,15 +114,6 @@ else
     cp $T_PAP_CONF/$T_PAP_AUTH_INI $SCRIPTBACKUPLOCATION/$T_PAP_AUTH_INI
     cp $T_PAP_CONF/$T_PAP_CONF_INI $SCRIPTBACKUPLOCATION/$T_PAP_CONF_INI
 fi
-
-
-
-#########
-# START #
-#########
-
-echo "START `date` "
-echo "------------------------------------------------"
 
 ####################################
 # Create a directory for log files #

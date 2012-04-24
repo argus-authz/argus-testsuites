@@ -1,65 +1,43 @@
-#!/bin/sh
+#!/bin/bash
+
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
+
+# Start test
 
 script_name=`basename $0`
 failed="no"
 
-####################################################
-#adapt the script to be compatible with EMI and EGEE
-if [ -z $T_PEP_HOME ]
-then
-    if [ -d /usr/share/argus/pepd ]
-    then
-        T_PEP_HOME=/usr/share/argus/pepd
-    else
-        if [ -d /opt/argus/pepd ]
-        then
-            T_PEP_HOME=/opt/argus/pepd
-        else
-            echo "T_PEP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
-    fi
-fi
-
-T_PEP_CTRL=argus-pepd
-if [ -f /etc/rc.d/init.d/pepd ]
-then
-T_PEP_CTRL=pepd;
-fi
-echo "T_PEP_CTRL set to: $T_PEP_CTRL"
-#until here
-####################################################
-
-configfile="$T_PEP_HOME/conf/pepd.ini"
-
 echo "Running: ${script_name}"
 echo `date`
 
-/etc/rc.d/init.d/$T_PEP_CTRL status > /dev/null
+$T_PEP_CTRL status > /dev/null
 if [ $? -ne 0 ]; then
     echo "${script_name}: PEPd is not running. Good."
 else
     echo "${script_name}: Stopping PEPd."
-    /etc/rc.d/init.d/$T_PEP_CTRL stop > /dev/null
+    $T_PEP_CTRL stop > /dev/null
     sleep 5
 fi
 
 # Change the pips section to comment out...
 
-grep pips $configfile
+grep pips $T_PEP_CONF/$T_PEP_INI
 echo "changed to:"
-sed -i 's/pips =/# pips =/g' $configfile
-grep pips $configfile
+sed -i 's/pips =/# pips =/g' $T_PEP_CONF/$T_PEP_INI
+grep pips $T_PEP_CONF/$T_PEP_INI
 # Now try to start pepd.
 
 echo "${script_name}: Starting PEPd."
-/etc/rc.d/init.d/$T_PEP_CTRL start > /dev/null; result=$?;
+$T_PEP_CTRL start > /dev/null
+result=$?
 sleep 5
 # echo $result
 if [ $result -eq 0 ]
 then
     echo "${script_name}: Stopping PEPd."
-    /etc/rc.d/init.d/$T_PEP_CTRL stop > /dev/null
+    $T_PEP_CTRL stop > /dev/null
     sleep 5
 else
     echo "${script_name}: PEPd failed to start."
@@ -68,20 +46,23 @@ fi
 
 # Now restore to original
 
-sed -i 's/# pips =/pips =/g' $configfile
+rm -r $SCRIPTBACKUPLOCATION/$T_PEP_INI
 
 # Now try to start pepd.
 
 echo "${script_name}: Starting PEPd."
-/etc/rc.d/init.d/$T_PEP_CTRL start > /dev/null; result=$?;
+$T_PEP_CTRL start > /dev/null
+result=$?
 sleep 5
 # echo $result
+if [ $result -ne 0 ]
+    echo "${script_name}: PEPd failed to start."
+    failed="yes"
+fi
+
 
 ###############################################################
-#clean up
 
-clean_up=0
-# clean_up=1
 
 if [ $failed == "yes" ]; then
   echo "---${script_name}: TEST FAILED---"

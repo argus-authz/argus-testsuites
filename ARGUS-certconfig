@@ -25,6 +25,10 @@ export T_PAP_CTRL=/etc/init.d/argus-pap
 export T_PDP_CTRL=/etc/init.d/argus-pdp
 export T_PEP_CTRL=/etc/init.d/argus-pepd
 
+# CLI's
+export PEPCLI=/usr/bin/pepcli
+export PAP_ADMIN=/usr/bin/pap-admin
+
 # Tests to run (yes/no)
 export PAP_CLI="yes"
 export PAP_management="yes"
