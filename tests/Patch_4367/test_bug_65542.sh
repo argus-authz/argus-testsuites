@@ -1,5 +1,9 @@
 #!/bin/bash
 
+script_name=`basename $0`
+failed="no"
+policyfile=policyfile.txt
+
 # Make sure all the needed Variables are present and all the Argus-components are up and running
 source $FRAMEWORK/set_homes.sh
 source $FRAMEWORK/start_services.sh

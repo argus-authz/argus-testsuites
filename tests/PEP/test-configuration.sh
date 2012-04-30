@@ -1,25 +1,8 @@
 #!/bin/bash
 
-#Assumtpions: The PEP is running with a correct configuration file
-#Note: Each single test has this assumption
-
-#Set the Home directory according the installation type (EMI or Glite)
-if [ -z $T_PEP_HOME ]; then
-    if [ -d /usr/share/argus/pepd ]; then
-        T_PEP_HOME=/usr/share/argus/pepd
-    else
-        echo "T_PEP_HOME not set, not found at standard locations. Exiting."
-        exit 2;
-    fi
-fi
-
-#Set the Process name
-T_PEP_CTRL=argus-pepd
-echo "T_PEP_CTRL set to: $T_PEP_CTRL"
-
-#Set the Status info
-PEP_INFO='Argus PEP Server'
-echo "PEP_INFO set to: $PEP_INFO"
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
 
 echo `date`
 echo "---Test-PEP-Configuration---"
@@ -32,7 +15,7 @@ failed="no"
 #################################################################
 echo "1) testing pep status"
 
-/etc/rc.d/init.d/$T_PEP_CTRL status | grep -q "Service: $PEP_INFO"
+$T_PEP_CTRL status | grep -q "argus-pepd is running..."
 if [ $? -eq 0 ]; then
     echo "OK"
 else
@@ -42,12 +25,12 @@ fi
 
 #################################################################
 echo "2) testing pep with SSL"
-/etc/rc.d/init.d/$T_PEP_CTRL stop
+$T_PEP_CTRL stop
 mv $conffile $bkpconffile
 #Insert SSL option
 sed '/SERVICE/a\enableSSL = true' $bkpconffile > $conffile
 
-/etc/rc.d/init.d/$T_PEP_CTRL start
+$T_PEP_CTRL start
 sleep 5
 if [ $? -eq 0 ]; then
     echo "OK"
@@ -59,9 +42,9 @@ fi
 #################################################################
 
 echo "3) testing pep with no config file"
-/etc/rc.d/init.d/$T_PEP_CTRL stop
+$T_PEP_CTRL stop
 mv $conffile $bkpconffile2
-/etc/rc.d/init.d/$T_PEP_CTRL start
+$T_PEP_CTRL start
 sleep 5
 if [ $? -ne 0 ] ; then
     echo "OK"
@@ -74,7 +57,7 @@ fi
 
 mv $bkpconffile $conffile
 rm -f $bkpconffile2
-/etc/rc.d/init.d/$T_PEP_CTRL restart >>/dev/null
+$T_PEP_CTRL restart >>/dev/null
 sleep 5
 
 if [ $failed == "yes" ]; then
