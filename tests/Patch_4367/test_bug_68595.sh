@@ -1,76 +1,38 @@
-#!/bin/sh
+#!/bin/bash
 
-# This one should test the add obligation functionality
-
-script_name=`basename $0`
-failed="no"
-policyfile=policyfile.txt
-obligationfile=obligationfile.txt
-
-## This is the needed bit to make EGEE/EMI compatible tests
-if [ -z $T_PAP_HOME ]
-then
-    if [ -d /usr/share/argus/pap ]
-    then
-        T_PAP_HOME=/usr/share/argus/pap
-    else
-        if [ -d /opt/argus/pap ]
-        then
-            T_PAP_HOME=/opt/argus/pap
-        else
-            echo "T_PAP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
-    fi
-fi
-T_PEP_CTRL=argus-pepd
-if [ -f /etc/rc.d/init.d/pepd ];then T_PEP_CTRL=pepd;fi
-echo "T_PEP_CTRL set to: /etc/rc.d/init.d/pep"
-T_PDP_CTRL=argus-pdp
-if [ -f /etc/rc.d/init.d/pdp ];then T_PDP_CTRL=pdp;fi
-echo "T_PDP_CTRL set to: /etc/rc.d/init.d/$T_PDP_CTRL"
-T_PAP_CTRL=argus-pap
-if [ -f /etc/rc.d/init.d/pap-standalone ];then
-    T_PAP_CTRL=pap-standalone
-fi
-echo "T_PAP_CTRL set to: /etc/rc.d/init.d/$T_PAP_CTRL"
-/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
-if [ $? -ne 0 ]; then
-  echo "PAP is not running"
-  /etc/rc.d/init.d/$T_PAP_CTRL start
-  sleep 10
-fi
-## To here for EGEE/EMI compatible tests
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
 
 echo "Running: ${script_name}"
 echo `date`
 
-/etc/rc.d/init.d/$T_PEP_CTRL status > /dev/null
+$T_PEP_CTRL status > /dev/null
 if [ $? -ne 0 ]; then
   echo "PEPd is not running. Starting one."
-  /etc/rc.d/init.d/$T_PEP_CTRL start
+  $T_PEP_CTRL start
   sleep 10
 fi
 
-/etc/rc.d/init.d/$T_PDP_CTRL status > /dev/null
+$T_PDP_CTRL status > /dev/null
 if [ $? -ne 0 ]; then
   echo "PDP is not running. Starting one."
-  /etc/rc.d/init.d/$T_PDP_CTRL start
+  $T_PDP_CTRL start
   sleep 10
 fi
 
-/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -ne 0 ]; then
   echo "PAP is not running"
-  /etc/rc.d/init.d/$T_PAP_CTRL start;
+  $T_PAP_CTRL start;
   sleep 10;
 fi
 
 # Remove all policies defined for the default pap
-$T_PAP_HOME/bin/pap-admin rap
+$PAP_ADMIN rap
 if [ $? -ne 0 ]; then
   echo "Error cleaning the default pap"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
+  echo "Failed command: $PAP_ADMIN rap"
   exit 1
 fi
 
@@ -102,19 +64,19 @@ OBLIGATION="http://glite.org/xacml/obligation/local-environment-map"
 OPTS=" -v "
 OPTS=" "
 
-$T_PAP_HOME/bin/pap-admin $OPTS ap \
+$PAP_ADMIN $OPTS ap \
              --resource ${RESOURCE} \
              --action $ACTION \
              --obligation $OBLIGATION \
              ${RULE} subject="$obligation_dn"
 
-#$T_PAP_HOME/bin/pap-admin lp -srai
+#$PAP_ADMIN lp -srai
 
 ###############################################################
 
 # Is the obligation there?
 
-CMD="$T_PAP_HOME/bin/pap-admin lp -srai"; 
+CMD="$PAP_ADMIN lp -srai"; 
 $CMD > ${script_name}.out
 grep -q 'obligation' ${script_name}.out;result=$?
 if [ $result -ne 0 ]
@@ -133,15 +95,15 @@ fi
 
 # Now get the ID
 
-id=`$T_PAP_HOME/bin/pap-admin lp -srai | grep 'id=[^public]' | sed 's/id=//'`
-CMD="$T_PAP_HOME/bin/pap-admin ro $id $OBLIGATION";
+id=`$PAP_ADMIN lp -srai | grep 'id=[^public]' | sed 's/id=//'`
+CMD="$PAP_ADMIN ro $id $OBLIGATION";
 echo $CMD
 $CMD
 
 # Is the obligation there? It should not be
 # Below should see return codes <>0, <>0, 0
 
-CMD="$T_PAP_HOME/bin/pap-admin lp -srai"; 
+CMD="$PAP_ADMIN lp -srai"; 
 $CMD > ${script_name}.out
 grep $OBLIGATION  ${script_name}.out;result=$?
 if [ $result -eq 0 ]
@@ -150,10 +112,10 @@ then
     failed="yes"
 fi
 
-CMD="$T_PAP_HOME/bin/pap-admin ao $id $OBLIGATION"
+CMD="$PAP_ADMIN ao $id $OBLIGATION"
 $CMD
 
-CMD="$T_PAP_HOME/bin/pap-admin lp -sai";
+CMD="$PAP_ADMIN lp -sai";
 $CMD > ${script_name}.out
 grep -q 'obligation' ${script_name}.out;result=$?
 if [ $result -ne 0 ]

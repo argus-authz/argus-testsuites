@@ -5,7 +5,7 @@ source $FRAMEWORK/set_homes.sh
 source $FRAMEWORK/start_services.sh
 
 # Set up the environment for the use of pepcli
-source pepcli-env.sh
+source $FRAMEWORK/pepcli-env.sh
 
 export LD_LIBRARY_PATH=/opt/glite/lib64
 OPTS=" -d "

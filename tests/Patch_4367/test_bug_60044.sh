@@ -1,51 +1,20 @@
-#!/bin/sh
-#
+#!/bin/bash
 
-script_name=`basename $0`
-failed="no"
-policyfile=policyfile.txt
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
 
-## This is the needed bit to make EGEE/EMI compatible tests
-if [ -z $T_PAP_HOME ]
-then
-    if [ -d /usr/share/argus/pap ]
-    then
-        T_PAP_HOME=/usr/share/argus/pap
-    else
-        if [ -d /opt/argus/pap ]
-        then
-            T_PAP_HOME=/opt/argus/pap
-        else
-            echo "T_PAP_HOME not set, not found at standard locations. Exiting."
-            exit 2;
-        fi
-    fi
-fi
-T_PAP_CTRL=argus-pap
-if [ -f /etc/rc.d/init.d/pap-standalone ]
-then
-    T_PAP_CTRL=pap-standalone
-fi
-echo "T_PAP_CTRL set to: /etc/rc.d/init.d/$T_PAP_CTRL"
-/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
-if [ $? -ne 0 ]; then
-  echo "PAP is not running"
-  /etc/rc.d/init.d/$T_PAP_CTRL start
-  sleep 10
-fi
-## To here for EGEE/EMI compatible tests
-
-/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
+$T_PAP_CTRL status | grep -q 'PAP running'
 if [ $? -ne 0 ]; then
   echo "PAP is not running"
   exit 1
 fi
 
 #Remove all policies defined for the default pap
-$T_PAP_HOME/bin/pap-admin rap
+$PAP_ADMIN rap
 if [ $? -ne 0 ]; then
   echo "Error cleaning the default pap"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
+  echo "Failed command: $PAP_ADMIN rap"
   exit 1
 fi
 
@@ -62,10 +31,10 @@ resource "resource_1" {
     }
 }
 EOF
-$T_PAP_HOME/bin/pap-admin apf $policyfile
+$PAP_ADMIN apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $PAP_ADMIN apf $policyfile"
   exit 1
 fi
 
@@ -77,10 +46,10 @@ resource "resource_2" {
     }
 }
 EOF
-$T_PAP_HOME/bin/pap-admin apf $policyfile
+$PAP_ADMIN apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $PAP_ADMIN apf $policyfile"
   exit 1
 fi
 
@@ -91,14 +60,14 @@ resource "resource_3" {
     }
 }
 EOF
-$T_PAP_HOME/bin/pap-admin apf $policyfile
+$PAP_ADMIN apf $policyfile
 if [ $? -ne 0 ]; then
   echo "Error preparing the test environment"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin apf $policyfile"
+  echo "Failed command: $PAP_ADMIN apf $policyfile"
   exit 1
 fi
 
-$T_PAP_HOME/bin/pap-admin lp --resource "resource_2" | grep -q "999998"
+$PAP_ADMIN lp --resource "resource_2" | grep -q "999998"
 if [ $? -ne 0 ]
 then
     failed="yes"
@@ -108,7 +77,7 @@ fi
 
 # probably should verify by action as well?
 
-$T_PAP_HOME/bin/pap-admin lp --action "execute" | grep -q "999997"
+$PAP_ADMIN lp --action "execute" | grep -q "999997"
 if [ $? -ne 0 ]
 then
     failed="yes"
@@ -116,7 +85,7 @@ else
     echo "$script_name: passed lp by valid action."
 fi
 
-$T_PAP_HOME/bin/pap-admin lp --action "spare" | grep -q "No policies has been found."
+$PAP_ADMIN lp --action "spare" | grep -q "No policies has been found."
 if [ $? -ne 0 ]
 then
     failed="yes"
@@ -134,10 +103,10 @@ if [ $clean_up -eq 0 ]
 then
 rm -f $policyfile
 #Remove all policies defined for the default pap
-$T_PAP_HOME/bin/pap-admin rap
+$PAP_ADMIN rap
 if [ $? -ne 0 ]; then
   echo "Error cleaning the default pap"
-  echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
+  echo "Failed command: $PAP_ADMIN rap"
   exit 1
 fi
 fi

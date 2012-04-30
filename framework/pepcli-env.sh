@@ -96,8 +96,7 @@ echo ${target_file};cat ${target_file}
 
 # Now sort out the pepd.ini file
 grep -q 'org.glite.authz.pep.obligation.dfpmap.DFPMObligationHandlerConfigurationParser' $T_PEP_CONF/$T_PEP_INI
-if [ $? -ne 0 ]
-then
+if [ $? -ne 0 ]; then
     echo "${script_name}: Obligation handler not defined"
     failed="yes"
     exit 1;
@@ -119,12 +118,9 @@ if [ $? -ne 0 ]; then
   $T_PEP_CTRL start
   sleep 10
 else
-  echo "${script_name}: Stopping PEPd."
-  $T_PEP_CTRL stop > /dev/null
-  sleep 5
-  echo "${script_name}: Starting PEPd."
-  $T_PEP_CTRL start > /dev/null
-  sleep 15
+  echo "${script_name}: Restarting PEPd."
+  $T_PEP_CTRL restart > /dev/null
+  sleep 10
 fi
 }
 
@@ -155,7 +151,7 @@ fi
 pap_start
 
 # Remove all policies defined for the default pap
-$PAP_ADMIN
+$PAP_ADMIN rap
 if [ $? -ne 0 ]; then
   echo "Error cleaning the default pap"
   echo "Failed command: $T_PAP_HOME/bin/pap-admin rap"
