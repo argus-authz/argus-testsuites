@@ -102,8 +102,8 @@ $PEPCLI $OPTS -p https://`hostname`:8154/authz \
        --key /etc/grid-security/hostkey.pem \
        --cert /etc/grid-security/hostcert.pem \
        -r "resource_1" \
-       -a "testwerfer" > /tmp/${script_name}.out \
-       -f /dteam
+       -a "testwerfer" \
+       -f /dteam > /tmp/${script_name}.out
 result=$?
 
 if [ $result -eq 0 ]

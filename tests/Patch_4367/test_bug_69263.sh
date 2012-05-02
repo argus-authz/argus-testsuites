@@ -56,7 +56,7 @@ $T_PEP_CTRL start > /dev/null
 result=$?
 sleep 5
 # echo $result
-if [ $result -ne 0 ]
+if [ $result -ne 0 ]; then
     echo "${script_name}: PEPd failed to start."
     failed="yes"
 fi
