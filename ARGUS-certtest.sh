@@ -172,7 +172,7 @@ if [ "x${PAP_CLI}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -207,7 +207,7 @@ if [ "x${PAP_management}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -235,7 +235,7 @@ if [ "x${PDP}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -263,7 +263,7 @@ if [ "x${PEP}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -294,7 +294,7 @@ if [ "x${Patch4367}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -325,7 +325,7 @@ if [ "x${Task18586}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -356,7 +356,7 @@ if [ "x${Task20989}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
@@ -388,7 +388,7 @@ if [ "x${Task21931}" = "xyes" ]; then
   for item in ${tests_list[*]}
   do
     rm -rf ${item}_result.txt
-    ./$item tee -a $loglocation/$testreport  $loglocation/${item}_result.txt 2>&1
+    ./$item | tee -a $loglocation/$testreport | > $loglocation/${item}_result.txt 2>&1
     if [ $? -ne 0 ]; then
       echo "$item FAILED"
       failed=yes
