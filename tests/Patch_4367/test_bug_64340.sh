@@ -36,8 +36,6 @@ sleep 5
 
 ###############################################################
 
-export LD_LIBRARY_PATH=/opt/glite/lib64:${LD_LIBRARY_PATH}
-
 $PEPCLI -p https://`hostname`:8154/authz \
        -c /etc/grid-security/hostcert.pem \
        --capath /etc/grid-security/certificates/ \
@@ -50,13 +48,13 @@ result=$?
 
 if [ $result -eq 0 ]
 then
-    grep -q $RESOURCE /tmp/${script_name}.out;
+    grep -q resource_1 /tmp/${script_name}.out;
     if [ $? -ne 0 ]
     then
         echo "${script_name}: Did not find expected resource: $RESOURCE"
         failed="yes"
     fi
-    grep -qi $RULE /tmp/${script_name}.out;
+    grep -qi permit /tmp/${script_name}.out;
     if [ $? -ne 0 ]
     then
 	echo "${script_name}: Did not find expected rule: $RULE"
