@@ -94,7 +94,7 @@ if [ $? -ne 0 ]
 then
     failed="yes"
 else
-    echo "$script_name: passed lp by INvalid action."
+    echo "$script_name: passed lp by Invalid action."
 fi
 
 ###############################################################

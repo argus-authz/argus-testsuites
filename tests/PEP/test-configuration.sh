@@ -46,6 +46,7 @@ $T_PEP_CTRL stop
 mv $conffile $bkpconffile2
 $T_PEP_CTRL start
 sleep 5
+$T_PEP_CTRL status | grep -q "argus-pepd is running..."
 if [ $? -ne 0 ] ; then
     echo "OK"
 else

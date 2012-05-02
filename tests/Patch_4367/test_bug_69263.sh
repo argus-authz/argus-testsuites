@@ -46,7 +46,8 @@ fi
 
 # Now restore to original
 
-rm -r $SCRIPTBACKUPLOCATION/$T_PEP_INI
+rm -f $T_PEP_CONF/$T_PEP_INI
+cp -f $SCRIPTBACKUPLOCATION/$T_PEP_INI $T_PEP_CONF/$T_PEP_INI
 
 # Now try to start pepd.
 

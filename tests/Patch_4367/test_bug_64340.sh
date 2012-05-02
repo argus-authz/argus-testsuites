@@ -102,7 +102,8 @@ $PEPCLI $OPTS -p https://`hostname`:8154/authz \
        --key /etc/grid-security/hostkey.pem \
        --cert /etc/grid-security/hostcert.pem \
        -r "resource_1" \
-       -a "testwerfer" > /tmp/${script_name}.out
+       -a "testwerfer" > /tmp/${script_name}.out \
+       -f /dteam
 result=$?
 
 if [ $result -eq 0 ]
@@ -155,10 +156,6 @@ then
 fi
 
 ###############################################################
-#clean up
-
-clean_up=0
-# clean_up=1
 
 if [ $failed == "yes" ]; then
   echo "---${script_name}: TEST FAILED---"
