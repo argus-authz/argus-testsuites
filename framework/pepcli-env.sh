@@ -37,6 +37,11 @@ if [ ! -f $USERPROXY ]; then
     -key $USERKEY \
     -pwstdin < ~/user_certificates/password
     CMD="voms-proxy-info -fqan"; echo $CMD; $CMD
+    if [ $? -eq 0 ]; then
+        USERCERT=$USERPROXY
+    else
+        echo "Error setting the Usercert to $USERPROXY"
+    fi
 fi
 
 echo "Running: ${script_name}"

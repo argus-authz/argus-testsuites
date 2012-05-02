@@ -62,7 +62,7 @@ echo "---Test: XACML SOAP handler Error---"
 echo "1) Testing if a correct error is produced"
 ( sleep 2
   echo "POST /authz"
-  sleep 2 ) | telnet localhost 8152 |grep soap11:Fault >>/dev/null
+  sleep 2 ) | openssl s_client -connect `hostname`:8152 -quiet |grep soap11:Fault >>/dev/null
 if [ $? -eq 0 ]; then
     echo "OK" 
 else
