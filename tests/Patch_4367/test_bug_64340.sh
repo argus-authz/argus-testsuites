@@ -11,99 +11,41 @@ source $FRAMEWORK/start_services.sh
 echo "Running: ${script_name}"
 echo `date`
 
-$T_PEP_CTRL status > /dev/null
-if [ $? -ne 0 ]; then
-  echo "PEPd is not running. Starting one."
-  $T_PEP_CTRL start
-  sleep 5
-else
-  echo "${script_name}: Stopping PEPd."
-  $T_PEP_CTRL stop > /dev/null
-  sleep 5
-  echo "${script_name}: Starting PEPd."
-  $T_PEP_CTRL start > /dev/null
-  sleep 15
-fi
-
-$T_PDP_CTRL status > /dev/null
-if [ $? -ne 0 ]; then
-  echo "PDP is not running. Starting one."
-  $T_PDP_CTRL start
-  sleep 15
-fi
-
-# use a PAP to enter a policy and an obligation?
-
-$T_PAP_CTRL status | grep -q 'PAP running'
-if [ $? -ne 0 ]; then
-  echo "PAP is not running"
-  $T_PAP_CTRL start;
-  sleep 15;
-fi
-
-# Remove all policies defined for the default pap
-$PAP_ADMIN rap
-if [ $? -ne 0 ]; then
-  echo "Error cleaning the default pap"
-  echo "Failed command: $PAP_ADMIN rap"
-  exit 1
-fi
-
 # Get my cert DN for usage later
 declare subj_string;
 foo=`openssl x509 -in /etc/grid-security/hostcert.pem -subject -noout`;
 IFS=" "
 subj_string=( $foo )
 
-RESOURCE="resource_1"
-ACTION="do_not_test"
-RULE="permit"
-
-# Store initial policy
-cat <<EOF > $policyfile
-resource "${RESOURCE}" {
-    action "${ACTION}" {
-        rule ${RULE} { subject="${subj_string[1]}" }
-    }
-}
-EOF
-
-# $PAP_ADMIN apf $policyfile
-if [ $? -ne 0 ]; then
-  echo "Error preparing the test environment"
-  echo "Failed command: $PAP_ADMIN apf $policyfile"
-  exit 1
-fi
 
 # Now should add the obligation?
 
-OPTS=" -v "
-OPTS=" "
-
-$PAP_ADMIN $OPTS ap --resource resource_1 \
+$PAP_ADMIN ap --resource resource_1 \
              --action testwerfer \
              --obligation \
-http://glite.org/xacml/obligation/local-environment-map ${RULE} subject="${subj_string[1]}"
+http://glite.org/xacml/obligation/local-environment-map permit subject="${subj_string[1]}"
 
 ###############################################################
 
 $PAP_ADMIN lp -srai
+sleep 5
 $T_PDP_CTRL reloadpolicy
+sleep 5
+$T_PEP_CTRL clearcache
+sleep 5
 
 ###############################################################
 
 export LD_LIBRARY_PATH=/opt/glite/lib64:${LD_LIBRARY_PATH}
-OPTS=" -v "
-OPTS=" "
 
-$PEPCLI $OPTS -p https://`hostname`:8154/authz \
+$PEPCLI -p https://`hostname`:8154/authz \
        -c /etc/grid-security/hostcert.pem \
        --capath /etc/grid-security/certificates/ \
        --key /etc/grid-security/hostkey.pem \
        --cert /etc/grid-security/hostcert.pem \
        -r "resource_1" \
        -a "testwerfer" \
-       -f /dteam > /tmp/${script_name}.out
+       -f "/dteam" > /tmp/${script_name}.out
 result=$?
 
 if [ $result -eq 0 ]
