@@ -3,59 +3,15 @@
 script_name=`basename $0`
 passed="yes"
 
-#########################################################
-# Test if the Services are present on the system and setting some variables
-# This is done for every test, even if the variables are not needed
-if [ -z $T_PAP_HOME ]; then
-	if [ -d /usr/share/argus/pap ]; then
-		T_PAP_HOME=/usr/share/argus/pap
-	else
-		echo "T_PAP_HOME not set, not found at standard locations. Exiting."
-		exit 2;
-	fi
-fi
-
-T_PAP_CTRL=argus-pap
-if [ -f /etc/rc.d/init.d/pap-standalone ]; then
-	T_PAP_CTRL=pap-standalone
-fi
-
-
-if [ -z $T_PDP_HOME ]; then
-	if [ -d /usr/share/argus/pdp ]; then
-		T_PDP_HOME=/usr/share/argus/pdp
-	else
-		echo "T_PDP_HOME not set, not found at standard locations. Exiting."
-		exit 2;
-	fi
-fi
-
-T_PDP_CTRL=argus-pdp
-if [ -f /etc/rc.d/init.d/pdp ]; then
-	T_PDP_CTRL=pdp;
-fi
-
-
-if [ -z $T_PEP_HOME ]; then
-	if [ -d /usr/share/argus/pepd ]; then
-		T_PEP_HOME=/usr/share/argus/pepd
-	else
-		echo "T_PEP_HOME not set, not found at standard locations. Exiting."
-		exit 2;
-	fi
-fi
-
-T_PEP_CTRL=argus-pepd
-if [ -f /etc/rc.d/init.d/pepd ]; then
-	T_PEP_CTRL=pepd;
-fi
-#########################################################
+# Make sure all the needed Variables are present and all the Argus-components are up and running
+source $FRAMEWORK/set_homes.sh
+source $FRAMEWORK/start_services.sh
 
 
 #########################################################
 # Prepare the environment (conf-files, e.t.c) for the TEST
 #
-is_proxy="yes"
+is_proxy=”yes”
 
 if [ $is_proxy ]; then
 	USERCERT=~/user_certificates/test_user_1_cert.pem
@@ -72,7 +28,7 @@ fi
 
 if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
 	echo \
-	'"dteam" "voms.hellasgrid.gr" "15004" "/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr" "dteam"'\
+	‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
 	> /etc/vomses/dteam-voms.cern.ch
 fi
 
@@ -90,27 +46,19 @@ fi
 
 
 # Copy the files:
-# /etc/grid-security/grid-mapfile
-# /etc/grid-security/groupmapfile
-# and the directory:
-# /etc/grid-security/gridmapdir
-# To /tmp directory for safekeeping!
-target_dir=/tmp
 source_dir=/etc/grid-security
 target_file=grid-mapfile
-mv ${source_dir}/${target_file} ${target_dir}/${target_file}.${script_name}
 touch ${source_dir}/${target_file}
 
 target_file=groupmapfile
-mv ${source_dir}/${target_file} ${target_dir}/${target_file}.${script_name}
 touch ${source_dir}/${target_file}
 
 target_file_dir=gridmapdir
-tar -cf ${target_dir}/${target_file_dir}.tar  ${source_dir}/${target_file_dir} --remove-files
+mkdir -p ${target_dir}/${target_file_dir}
 
 # Now enter the userids etc
 # /etc/grid-security/grid-mapfile
-# "/dteam" .dteam
+# “/dteam” .dteam
 # <DN> <user id>
 target_file=/etc/grid-security/grid-mapfile
 DTEAM=.dteam
@@ -119,9 +67,11 @@ echo '"/dteam/Role=NULL/Capability=NULL"' $DTEAM > ${target_file}
 echo ${target_file};cat ${target_file}
 
 target_file=/etc/grid-security/groupmapfile
-DTEAM=DTEAM-Group
+DTEAM=group
+GROUP2=group2
 echo '"/dteam"' $DTEAM > ${target_file}
 echo '"/dteam/Role=NULL/Capability=NULL"' $DTEAM > ${target_file}
+echo '"/dteam/NGI_CH/Role=NULL/Capability=NULL"' $GROUP2 >> ${target_file}
 echo ${target_file};cat ${target_file}
 
 # make sure that there is a reference to the glite pool-accounts in the gridmapdir
@@ -178,7 +128,7 @@ pap_start
 #
 # Here’s the string format
 # subject= /C=CH/O=CERN/OU=GD/CN=Test user 1
-# so should match the first "subject= " and keep the rest
+# so should match the first “subject= “ and keep the rest
 # of the string
 obligation_dn=`openssl x509 -in $USERCERT -subject -noout -nameopt RFC2253 | sed 's/subject= //'`
 echo subject string="$obligation_dn"
@@ -227,23 +177,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "-------------------------------"
-#########################################################
-
-
-#########################################################
-#
-# clean up...
-#
-# Make sure to return the files
-source_dir=/tmp
-target_dir=/etc/grid-security
-target_file=grid-mapfile
-cp ${source_dir}/${target_file}.${script_name} ${target_dir}/${target_file}
-target_file=groupmapfile
-cp ${source_dir}/${target_file}.${script_name} ${target_dir}/${target_file}
-target_file_dir=gridmapdir
-rm -f ${target_dir}/${target_file_dir}/*
-tar -xf ${source_dir}/${target_file_dir}.tar -C /
 #########################################################
 
 

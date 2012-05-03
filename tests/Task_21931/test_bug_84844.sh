@@ -79,7 +79,7 @@ fi
 echo "-------------------------------"
 
 
-echo "3) Test if the PEPd is started with the memory option '-Xmx128':"
+echo "3) Test if the PEPd is started with the memory option '-Xmx256':"
 ps aux | grep pepd | grep -q Xmx256
 if [ $? -ne 0 ]; then
         passed="no"
