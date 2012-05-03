@@ -73,6 +73,7 @@ resource "resource_1" {
 EOF
 
 id=`$T_PAP_HOME/bin/pap-admin lp -srai | egrep 'id=[^public]' | sed 's/id=//'`
+sleep 5
 echo "ID=$id"
 $T_PAP_HOME/bin/pap-admin upf $id $policyfile
 if [ $? -eq 0 ]; then

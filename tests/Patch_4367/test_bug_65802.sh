@@ -20,7 +20,7 @@ wget --certificate=/etc/grid-security/hostcert.pem \
      --private-key=/etc/grid-security/hostkey.pem \
      --ca-directory=/etc/grid-security/certificates \
      --no-check-certificate \
-     https://${host}:8150/status  > /dev/null 2>&1
+     https://`hostname`:8150/status  > /dev/null 2>&1
 result=$?
 
 if [ $result -eq 0 ]
