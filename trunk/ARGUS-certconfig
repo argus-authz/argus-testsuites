@@ -1,0 +1,46 @@
+
+# Variables set to run the scripts on your system
+
+# Locations for storing needed files
+export LOGSLOCATION=/tmp
+export SCRIPTBACKUPLOCATION=$LOGSLOCATION/scripts
+
+# Home Directories
+export T_PAP_HOME=/usr/share/argus/pap
+export T_PDP_HOME=/usr/share/argus/pdp
+export T_PEP_HOME=/usr/share/argus/pepd
+
+# Configuration scripts and locations
+export T_PDP_CONF=$T_PDP_HOME/conf
+export T_PEP_CONF=$T_PEP_HOME/conf
+export T_PAP_CONF=$T_PAP_HOME/conf
+export T_PDP_INI=pdp.ini
+export T_PEP_INI=pepd.ini
+export T_PAP_ADMIN_INI=pap-admin.properties
+export T_PAP_AUTH_INI=pap_authorization.ini
+export T_PAP_CONF_INI=pap_configuration.ini
+
+# Init-scripts
+export T_PAP_CTRL=/etc/init.d/argus-pap
+export T_PDP_CTRL=/etc/init.d/argus-pdp
+export T_PEP_CTRL=/etc/init.d/argus-pepd
+
+# CLI's
+export PEPCLI=/usr/bin/pepcli
+export PAP_ADMIN=/usr/bin/pap-admin
+
+# Grid specific files
+export GRIDDIR=/etc/grid-security/
+export GRID-MAPFILE=grid-mapfile
+export GROUPMAPFILE=groupmapfile
+export GRIDMAPDIR=gridmapdir
+
+# Tests to run (yes/no)
+export PAP_CLI="yes"
+export PAP_management="yes"
+export PEP="yes"
+export PDP="yes"
+export Patch4367="yes"
+export Task18586="yes"
+export Task20989="yes"
+export Task21931="yes"
