@@ -1,5 +1,0 @@
-These are the Argus certification tests. The main Argus tests can be found
-in the "tests" subdirectory, and ARGUS-certtest.sh runs the testsuite.
-
-Because the PEP-j library is a bit separate, its own tests with documentation
-can be found under the "PEPJ" directory.

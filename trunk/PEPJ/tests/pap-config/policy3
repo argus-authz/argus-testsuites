@@ -1,8 +1,0 @@
-resource "test3" {
-    obligation "http://glite.org/xacml/obligation/local-environment-map" {
-    }
-    action "test3" {
-        rule deny { subject="__SUBJECT__" }
-    }
-} 
-

@@ -1,4 +1,0 @@
-argus-pdp-pep-common.jar
-bcprov.jar
-trustmanager.jar
-vomsjapi.jar

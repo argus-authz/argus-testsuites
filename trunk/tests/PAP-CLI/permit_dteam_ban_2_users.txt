@@ -1,8 +1,0 @@
-resource "resource1" {
-    action "action1" {
-        rule deny { subject="CN=Test user 303,OU=GD,O=CERN,C=CH" }
-        rule deny { subject="CN=Test user 306,OU=GD,O=CERN,C=CH" }
-        rule permit { fqan="/dteam/Role=.*/Capability=.*" }
-    }
-}
-

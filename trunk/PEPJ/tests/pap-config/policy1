@@ -1,7 +1,0 @@
-resource "test" {
-    obligation "http://glite.org/xacml/obligation/local-environment-map" {
-    }
-    action "test" {
-        rule permit { vo="__VO__" }
-    }
-} 
