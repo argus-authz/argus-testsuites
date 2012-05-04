@@ -29,6 +29,12 @@ export T_PEP_CTRL=/etc/init.d/argus-pepd
 export PEPCLI=/usr/bin/pepcli
 export PAP_ADMIN=/usr/bin/pap-admin
 
+# Grid specific files
+export GRIDDIR=/etc/grid-security/
+export GRID-MAPFILE=grid-mapfile
+export GROUPMAPFILE=groupmapfile
+export GRIDMAPDIR=gridmapdir
+
 # Tests to run (yes/no)
 export PAP_CLI="yes"
 export PAP_management="yes"

@@ -85,37 +85,37 @@ touch /etc/grid-security/gridmapdir/dteam002
 #########################################################
 # Now probably let's start the services.
 function pep_start {
-	/etc/rc.d/init.d/$T_PEP_CTRL status > /dev/null
+	$T_PEP_CTRL status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "PEPd is not running. Starting one."
-  		/etc/rc.d/init.d/$T_PEP_CTRL start
+  		$T_PEP_CTRL start
   		sleep 10
 	else
   		echo "${script_name}: Stopping PEPd."
-  		/etc/rc.d/init.d/$T_PEP_CTRL stop > /dev/null
+  		$T_PEP_CTRL stop > /dev/null
   		sleep 5
   		echo "${script_name}: Starting PEPd."
-  		/etc/rc.d/init.d/$T_PEP_CTRL start > /dev/null
+  		$T_PEP_CTRL start > /dev/null
   		sleep 15
 	fi
 }
 pep_start
 
 function pdp_start {
-	/etc/rc.d/init.d/$T_PDP_CTRL status > /dev/null
+	$T_PDP_CTRL status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "PDP is not running. Starting one."
-		/etc/rc.d/init.d/$T_PDP_CTRL start
+		$T_PDP_CTRL start
   		sleep 10
 	fi
 }
 pdp_start
 
 function pap_start {
-	/etc/rc.d/init.d/$T_PAP_CTRL status | grep -q 'PAP running'
+	$T_PAP_CTRL status | grep -q 'PAP running'
 	if [ $? -ne 0 ]; then
   		echo "PAP is not running"
-  		/etc/rc.d/init.d/$T_PAP_CTRL start;
+  		$T_PAP_CTRL start;
   		sleep 10;
 	fi 
 }
@@ -149,8 +149,8 @@ $T_PAP_HOME/bin/pap-admin ap $RULE subject="${obligation_dn}" \
              
 sleep 5;
 
-/etc/rc.d/init.d/$T_PEP_CTRL clearcache
-/etc/rc.d/init.d/$T_PDP_CTRL reloadpolicy #without this, the policy wouldn't be visible for ~5min.
+$T_PEP_CTRL clearcache
+$T_PDP_CTRL reloadpolicy #without this, the policy wouldn't be visible for ~5min.
 #########################################################
 
 
