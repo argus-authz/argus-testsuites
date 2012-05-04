@@ -54,7 +54,8 @@ target_file=groupmapfile
 touch ${source_dir}/${target_file}
 
 target_file_dir=gridmapdir
-mkdir -p ${target_dir}/${target_file_dir}
+mkdir -p ${source_dir}/${target_file_dir}
+rm -rf ${source_dir}/${target_file_dir}/*
 
 # Now enter the userids etc
 # /etc/grid-security/grid-mapfile
