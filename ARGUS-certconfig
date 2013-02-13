@@ -2,8 +2,7 @@
 # Variables set to run the scripts on your system
 
 # Locations for storing needed files
-export LOGSLOCATION=/tmp
-export SCRIPTBACKUPLOCATION=$LOGSLOCATION/scripts
+export TMP_DIR=/tmp
 
 # Home Directories
 export T_PAP_HOME=/usr/share/argus/pap
