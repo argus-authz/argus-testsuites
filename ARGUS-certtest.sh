@@ -97,10 +97,35 @@ fi
 echo "START `date` "
 echo "------------------------------------------------"
 
+####################################
+# Create a directory for log files #
+####################################
+
+id=`date +%Y-%m%dT%H:%M:%S`
+if [ -z "$TMP_DIR" ]; then
+  cp=`pwd`
+  loglocation=$cp/logs_$id
+  mkdir -p $loglocation
+else
+  loglocation=$TMP_DIR/logs_$id
+  mkdir -p $loglocation
+fi
+
+if [ ! -d $loglocation ];then
+  echo   "Error while creating log directory $loglocation"
+  exitFailure
+else
+  echo "Log files will be stored in $loglocation"
+fi
+LOGSLOCATION=$loglocation
+export LOGSLOCATION
+
 #####################################
 # Make a Backup of the Config-Files #
 #####################################
 
+SCRIPTBACKUPLOCATION=$loglocation/script_backup
+export SCRIPTBACKUPLOCATION
 mkdir -p $SCRIPTBACKUPLOCATION 
 
 if [ ! -d $SCRIPTBACKUPLOCATION ];then
@@ -117,27 +142,6 @@ else
     cp $GRIDDIR/$GROUPMAPFILE $SCRIPTBACKUPLOCATION/$GROUPMAPFILE
     mkdir $SCRIPTBACKUPLOCATION/$GRIDMAPDIR
     cp $GRIDDIR/$GRIDMAPDIR/* $SCRIPTBACKUPLOCATION/$GRIDMAPDIR/
-fi
-
-####################################
-# Create a directory for log files #
-####################################
-
-id=`date +%y%m%d%H%M%S`
-if [ -z "$LOGSLOCATION" ]; then
-  cp=`pwd`
-  loglocation=$cp/logs_$id
-  mkdir -p $loglocation
-else
-  loglocation=$LOGSLOCATION/logs_$id
-  mkdir -p $loglocation
-fi
-
-if [ ! -d $loglocation ];then
-  echo   "Error while creating log directory $loglocation"
-  exitFailure
-else
-  echo "Log files will be stored in $loglocation"
 fi
 
 #################################
