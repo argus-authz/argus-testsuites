@@ -25,9 +25,9 @@ then
     rm ${TMP_BIN}/pap-admin
 fi
 
-export PATH=$PATH:${TMP_BIN}
+export PATH=${TMP_BIN}:$PATH
 
-ln -s /opt/argus/pap/bin/pap-admin ${TMP_BIN}/pap-admin
+ln -s $T_PAP_HOME/bin/pap-admin ${TMP_BIN}/pap-admin
 
 #Remove all policies defined for the default pap
 pap-admin rap
