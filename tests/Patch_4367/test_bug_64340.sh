@@ -13,7 +13,7 @@ echo `date`
 
 # Get my cert DN for usage later
 declare subj_string;
-foo=`openssl x509 -in /etc/grid-security/hostcert.pem -subject -noout`;
+foo=`openssl x509 -in /etc/grid-security/hostcert.pem -subject  -nameopt RFC2253 -noout`;
 IFS=" "
 subj_string=( $foo )
 
@@ -28,19 +28,19 @@ http://glite.org/xacml/obligation/local-environment-map permit subject="${subj_s
 ###############################################################
 
 $PAP_ADMIN lp -srai
-sleep 5
+echo $T_PDP_CTRL reloadpolicy
 $T_PDP_CTRL reloadpolicy
-sleep 5
+echo $T_PEP_CTRL clearcache
 $T_PEP_CTRL clearcache
-sleep 5
 
 ###############################################################
+# -vx \
 
 $PEPCLI -p https://`hostname`:8154/authz \
-       -c /etc/grid-security/hostcert.pem \
        --capath /etc/grid-security/certificates/ \
        --key /etc/grid-security/hostkey.pem \
        --cert /etc/grid-security/hostcert.pem \
+       -k /etc/grid-security/hostcert.pem \
        -r "resource_1" \
        -a "testwerfer" \
        -f "/dteam" > $LOGSLOCATION/${script_name}.out
