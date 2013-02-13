@@ -43,18 +43,23 @@ $PEPCLI -p https://`hostname`:8154/authz \
        --cert /etc/grid-security/hostcert.pem \
        -r "resource_1" \
        -a "testwerfer" \
-       -f "/dteam" > /tmp/${script_name}.out
+       -f "/dteam" > $LOGSLOCATION/${script_name}.out
 result=$?
 
 if [ $result -eq 0 ]
 then
-    grep -q resource_1 /tmp/${script_name}.out;
+
+    echo "$LOGSLOCATION/${script_name}.out"
+    cat $LOGSLOCATION/${script_name}.out
+
+    grep -q resource_1 $LOGSLOCATION/${script_name}.out;
     if [ $? -ne 0 ]
     then
         echo "${script_name}: Did not find expected resource: $RESOURCE"
         failed="yes"
     fi
-    grep -qi permit /tmp/${script_name}.out;
+    RULE=permit
+    grep -qi $RULE $LOGSLOCATION/${script_name}.out;
     if [ $? -ne 0 ]
     then
 	echo "${script_name}: Did not find expected rule: $RULE"
@@ -63,7 +68,7 @@ then
 
     declare groups;
 
-    foo=`grep Username: /tmp/${script_name}.out`
+    foo=`grep Username: $LOGSLOCATION/${script_name}.out`
     IFS=" "
     groups=( $foo )
     if [ ! -z ${groups[1]} ]
@@ -73,7 +78,7 @@ then
 	echo "${script_name}: No user account mapped."
         failed="yes"
     fi
-    foo=`grep Group: /tmp/${script_name}.out`
+    foo=`grep Group: $LOGSLOCATION/${script_name}.out`
     IFS=" "
     groups=( $foo )
     if [ ! -z ${groups[1]} ]
@@ -83,7 +88,7 @@ then
         echo "${script_name}: No user group mapped."
         failed="yes"
     fi
-    foo=`grep "Secondary Groups:" /tmp/${script_name}.out`
+    foo=`grep "Secondary Groups:" $LOGSLOCATION/${script_name}.out`
     IFS=" "
     groups=( $foo )
     if [ ! -z ${groups[1]} ]
