@@ -104,10 +104,10 @@ echo "------------------------------------------------"
 id=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$TMP_DIR" ]; then
   cp=`pwd`
-  loglocation=$cp/argus-testsuite_$id
+  loglocation=$cp/argus-testsuites_$id
   mkdir -p $loglocation
 else
-  loglocation=$TMP_DIR/argus-testsuite_$id
+  loglocation=$TMP_DIR/argus-testsuites_$id
   mkdir -p $loglocation
 fi
 
