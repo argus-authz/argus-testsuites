@@ -11,7 +11,7 @@ source $FRAMEWORK/start_services.sh
 #########################################################
 # Prepare the environment (conf-files, e.t.c) for the TEST
 #
-is_proxy=”yes”
+is_proxy="yes"
 
 if [ $is_proxy ]; then
 	USERCERT=~/user_certificates/test_user_1_cert.pem
@@ -22,14 +22,16 @@ else
 	USERKEY=/etc/grid-security/hostkey.pem
 fi
 
+
+
 if [ ! -d /etc/vomses ]; then
 	mkdir -p /etc/vomses
-fi
+	if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
+		echo \
+		‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
+		> /etc/vomses/dteam-voms.cern.ch
+	fi
 
-if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
-	echo \
-	‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
-	> /etc/vomses/dteam-voms.cern.ch
 fi
 
 USERPROXY=/tmp/x509up_u0

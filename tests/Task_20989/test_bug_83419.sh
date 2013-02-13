@@ -24,12 +24,12 @@ fi
 
 if [ ! -d /etc/vomses ]; then
 	mkdir -p /etc/vomses
-fi
+	if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
+		echo \
+		‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
+		> /etc/vomses/dteam-voms.cern.ch
+	fi
 
-if [ ! -f /etc/vomses/dteam-voms.cern.ch ]; then
-	echo \
-	‘“dteam” “voms.hellasgrid.gr” “15004” “/C=GR/O=HellasGrid/OU=hellasgrid.gr/CN=voms.hellasgrid.gr” “dteam”’\
-	> /etc/vomses/dteam-voms.cern.ch
 fi
 
 USERPROXY=/tmp/x509up_u0
