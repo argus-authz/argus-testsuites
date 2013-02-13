@@ -3,10 +3,12 @@
 # Make sure that a test finds a virgin environment
 
 # Stop
-echo "Stopping Argus services..."
-$T_PAP_CTRL stop #> /dev/null 2>&1
-$T_PDP_CTRL stop #> /dev/null 2>&1
-$T_PEP_CTRL stop #> /dev/null 2>&1
+echo "Stop PAP..."
+$T_PAP_CTRL stop 
+echo "Stop PDP..."
+$T_PDP_CTRL stop
+echo "Stop PEP Server..."
+$T_PEP_CTRL stop
 
 sleep 2
 
@@ -30,10 +32,12 @@ fi
 sleep 2
 
 # Start the services
-echo "Starting Argus services..."
-$T_PAP_CTRL start #> /dev/null 2>&1
-$T_PDP_CTRL start #> /dev/null 2>&1
-$T_PEP_CTRL start #> /dev/null 2>&1
+echo "Start PAP..."
+$T_PAP_CTRL start 
+echo "Start PDP..."
+$T_PDP_CTRL start
+echo "Start PEP Server..."
+$T_PEP_CTRL start
 
 # Bridge a possible startup delay (e.g. to open up ports)
 sleep 10
@@ -48,9 +52,10 @@ if [ $? -ne 0 ]; then
 fi
 
 # Make sure the clean state is propagated troughout Argus
-echo "Reload policies into the PDP and clear the cache of the PEP..."
-$T_PDP_CTRL reloadpolicy #> /dev/null 2>&1
-$T_PEP_CTRL clearcache #> /dev/null 2>&1
+echo "PDP reload policies..."
+$T_PDP_CTRL reloadpolicy 
+echo "PEP Server clear cache..."
+$T_PEP_CTRL clearcache 
 
 echo "done"
 return 0

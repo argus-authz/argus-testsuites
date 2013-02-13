@@ -13,7 +13,7 @@ if [ -z $T_PAP_HOME ]; then
 fi
 
 if [ -z $T_PAP_CTRL ]; then
-    if [ -f /etc/init.d/argus-pap ]; then
+    if [ -x /etc/init.d/argus-pap ]; then
         export T_PAP_CTRL=/etc/init.d/argus-pap
     else
         echo "T_PAP_CTRL not set, not found at standard locations. Exiting."
@@ -31,7 +31,7 @@ if [ -z $T_PDP_HOME ]; then
 fi
 
 if [ -z $T_PDP_CTRL ]; then
-    if [ -f /etc/init.d/argus-pdp ]; then
+    if [ -x /etc/init.d/argus-pdp ]; then
         export T_PDP_CTRL=/etc/init.d/argus-pdp
     else
         echo "T_PDP_CTRL not set, not found at standard locations. Exiting."
@@ -49,7 +49,7 @@ if [ -z $T_PEP_HOME ]; then
 fi
 
 if [ -z $T_PEP_CTRL ]; then
-    if [ -f /etc/init.d/argus-pepd ]; then
+    if [ -x /etc/init.d/argus-pepd ]; then
         export T_PEP_CTRL=/etc/init.d/argus-pepd
     else
         echo "T_PEP_CTRL not set, not found at standard locations. Exiting."
