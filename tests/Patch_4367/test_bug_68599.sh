@@ -67,14 +67,14 @@ $PAP_ADMIN $OPTS ap \
 # Is the obligation there?
 
 CMD="$PAP_ADMIN lp -srai"; 
-$CMD > ${script_name}.out
-grep -q 'obligation' ${script_name}.out;result=$?
+$CMD > $LOGSLOCATION/${script_name}.out
+grep -q 'obligation' $LOGSLOCATION/${script_name}.out;result=$?
 if [ $result -ne 0 ]
 then
     echo "${script_name}: No obligation found."
     failed="yes"
 fi
-grep -q $OBLIGATION  ${script_name}.out;result=$?
+grep -q $OBLIGATION  $LOGSLOCATION/${script_name}.out;result=$?
 if [ $result -ne 0 ]
 then
     echo "${script_name}: No $OBLIGATION found."
@@ -93,8 +93,8 @@ $CMD
 # Below should see return codes <>0, <>0, 0
 
 CMD="$PAP_ADMIN lp -sai"; 
-$CMD > ${script_name}.out
-grep $OBLIGATION  ${script_name}.out;result=$?
+$CMD > $LOGSLOCATION/${script_name}.out
+grep $OBLIGATION  $LOGSLOCATION/${script_name}.out;result=$?
 if [ $result -eq 0 ]
 then
     echo "${script_name}: Obligation not removed."
@@ -105,14 +105,14 @@ CMD="$PAP_ADMIN ao $id $OBLIGATION"
 $CMD
 
 CMD="$PAP_ADMIN lp -sai";
-$CMD > ${script_name}.out
-grep -q 'obligation' ${script_name}.out;result=$?
+$CMD > $LOGSLOCATION/${script_name}.out
+grep -q 'obligation' $LOGSLOCATION/${script_name}.out;result=$?
 if [ $result -ne 0 ]
 then
     echo "${script_name}: No obligation found."
     failed="yes"
 fi
-grep -q $OBLIGATION  ${script_name}.out;result=$?
+grep -q $OBLIGATION  $LOGSLOCATION/${script_name}.out;result=$?
 if [ $result -ne 0 ]
 then
     echo "${script_name}: No $OBLIGATION found."
