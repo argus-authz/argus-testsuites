@@ -101,13 +101,13 @@ echo "------------------------------------------------"
 # Create a directory for log files #
 ####################################
 
-id=`date +%Y-%m%dT%H:%M:%S`
+id=`date +%Y-%m-%dT%H:%M:%S`
 if [ -z "$TMP_DIR" ]; then
   cp=`pwd`
-  loglocation=$cp/logs_$id
+  loglocation=$cp/argus-testsuite_$id
   mkdir -p $loglocation
 else
-  loglocation=$TMP_DIR/logs_$id
+  loglocation=$TMP_DIR/argus-testsuite_$id
   mkdir -p $loglocation
 fi
 
