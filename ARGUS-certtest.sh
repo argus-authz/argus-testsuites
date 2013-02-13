@@ -101,7 +101,7 @@ echo "------------------------------------------------"
 # Create a directory for log files #
 ####################################
 
-id=`date +%Y-%m-%dT%H:%M:%S`
+id=`date +%Y%m%d_%H%M%S`
 if [ -z "$TMP_DIR" ]; then
   cp=`pwd`
   loglocation=$cp/argus-testsuites_$id
