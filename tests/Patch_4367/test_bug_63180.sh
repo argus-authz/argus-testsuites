@@ -27,7 +27,7 @@ fi
 
 export PATH=${TMP_BIN}:$PATH
 
-ln -s $T_PAP_HOME/bin/pap-admin ${TMP_BIN}/pap-admin
+ln -fs $T_PAP_HOME/bin/pap-admin ${TMP_BIN}/pap-admin
 
 #Remove all policies defined for the default pap
 pap-admin rap
